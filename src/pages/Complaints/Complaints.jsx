@@ -248,7 +248,8 @@ export default function Complaints() {
     setIsAnalyzing(true)
     
     try {
-      const res = await fetch('http://localhost:4000/api/chat/analyze', {
+      const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000'
+      const res = await fetch(`${API_BASE}/api/chat/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

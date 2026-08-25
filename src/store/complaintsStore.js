@@ -55,6 +55,8 @@ const SEED_ALERTS = [
   { id: 'alert-4', text: '🩺 HEALTH CAMP: Free medical checkup camp on June 18 at Ward Community Center. Bring Aadhaar card.', active: true, createdAt: new Date().toISOString() },
 ]
 
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000'
+
 const useComplaintsStore = create(
   persist(
     (set, get) => ({
@@ -68,7 +70,7 @@ const useComplaintsStore = create(
       adminToken: null,
       adminLogin: async (username, password) => {
         try {
-          const res = await fetch('http://localhost:4000/api/admin/login', {
+          const res = await fetch(`${API_BASE}/api/admin/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username, password })
@@ -90,10 +92,9 @@ const useComplaintsStore = create(
         localStorage.removeItem('adminToken');
       },
       
-      // Load initial data
       fetchComplaints: async () => {
         try {
-          const res = await fetch('http://localhost:4000/api/complaints');
+          const res = await fetch(`${API_BASE}/api/complaints`);
           if (res.ok) {
             const data = await res.json();
             set({ complaints: data });
@@ -104,7 +105,7 @@ const useComplaintsStore = create(
       },
       fetchAnnouncements: async () => {
         try {
-          const res = await fetch('http://localhost:4000/api/announcements');
+          const res = await fetch(`${API_BASE}/api/announcements`);
           if (res.ok) {
             const data = await res.json();
             set({ announcements: data });
@@ -115,7 +116,7 @@ const useComplaintsStore = create(
       },
       fetchSurveys: async () => {
         try {
-          const res = await fetch('http://localhost:4000/api/surveys');
+          const res = await fetch(`${API_BASE}/api/surveys`);
           if (res.ok) {
             const data = await res.json();
             set({ surveys: data });
@@ -126,7 +127,7 @@ const useComplaintsStore = create(
       },
       fetchVolunteers: async () => {
         try {
-          const res = await fetch('http://localhost:4000/api/volunteers');
+          const res = await fetch(`${API_BASE}/api/volunteers`);
           if (res.ok) {
             const data = await res.json();
             set({ volunteers: data });
@@ -150,7 +151,7 @@ const useComplaintsStore = create(
         }
 
         try {
-          const res = await fetch('http://localhost:4000/api/complaints', {
+          const res = await fetch(`${API_BASE}/api/complaints`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(complaintData)
@@ -198,7 +199,7 @@ const useComplaintsStore = create(
       updateStatus: async (id, status, note, afterPhotoData) => {
         const token = get().adminToken || localStorage.getItem('adminToken');
         try {
-          const res = await fetch(`http://localhost:4000/api/complaints/${id}/status`, {
+          const res = await fetch(`${API_BASE}/api/complaints/${id}/status`, {
             method: 'PUT',
             headers: { 
               'Content-Type': 'application/json',
@@ -304,7 +305,7 @@ const useComplaintsStore = create(
 
       addAnnouncement: async (data) => {
         try {
-          const res = await fetch('http://localhost:4000/api/announcements', {
+          const res = await fetch(`${API_BASE}/api/announcements`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(data)
@@ -321,7 +322,7 @@ const useComplaintsStore = create(
 
       deleteAnnouncement: async (id) => {
         try {
-          const res = await fetch(`http://localhost:4000/api/announcements/${id}`, { method: 'DELETE' });
+          const res = await fetch(`${API_BASE}/api/announcements/${id}`, { method: 'DELETE' });
           if (res.ok) {
             set(s => ({ announcements: s.announcements.filter(a => a.id !== id) }));
           }
@@ -332,7 +333,7 @@ const useComplaintsStore = create(
 
       likeAnnouncement: async (id) => {
         try {
-          const res = await fetch(`http://localhost:4000/api/announcements/${id}/like`, { method: 'PUT' });
+          const res = await fetch(`${API_BASE}/api/announcements/${id}/like`, { method: 'PUT' });
           if (res.ok) {
             const updatedAnn = await res.json();
             set(s => ({
@@ -346,7 +347,7 @@ const useComplaintsStore = create(
 
       addVolunteer: async (vol) => {
         try {
-          const res = await fetch('http://localhost:4000/api/volunteers', {
+          const res = await fetch(`${API_BASE}/api/volunteers`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(vol)
@@ -363,7 +364,7 @@ const useComplaintsStore = create(
 
       addSurveyResponse: async (response) => {
         try {
-          const res = await fetch('http://localhost:4000/api/surveys', {
+          const res = await fetch(`${API_BASE}/api/surveys`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(response)
@@ -377,6 +378,7 @@ const useComplaintsStore = create(
           console.error("Failed to add survey", e);
         }
       },
+
     }),
     {
       name: 'adda_360-complaints-v2',

@@ -29,13 +29,21 @@ app.use('/api/volunteers', volunteerRoutes);
 const PORT = process.env.PORT || 4000;
 const MONGODB_URI = process.env.MONGODB_URI;
 
+// Connect to MongoDB (Mongoose caches this connection globally)
 mongoose.connect(MONGODB_URI)
   .then(() => {
     console.log('Connected to MongoDB');
-    app.listen(PORT, () => {
-      console.log(`Express server running on http://localhost:${PORT}`);
-    });
   })
   .catch((err) => {
     console.error('Failed to connect to MongoDB', err);
   });
+
+// Expose server port in non-serverless environments
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`Express server running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;
+

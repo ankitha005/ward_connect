@@ -356,10 +356,38 @@ const Navbar = () => {
                   ))}
                 </div>
 
+                {/* Dark Mode in mobile drawer */}
+                <motion.div
+                  className="p-4 pt-2 border-t border-slate-100 flex items-center justify-between"
+                  custom={navLinks.length}
+                  variants={mobileItemVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">Interface Mode</span>
+                  <button
+                    onClick={() => setDarkMode(d => !d)}
+                    className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold px-4 py-2 rounded-xl transition-all border border-slate-200"
+                  >
+                    {darkMode ? (
+                      <>
+                        <Sun size={16} className="text-amber-400" />
+                        <span>Light Mode</span>
+                      </>
+                    ) : (
+                      <>
+                        <Moon size={16} />
+                        <span>Dark Mode</span>
+                      </>
+                    )}
+                  </button>
+                </motion.div>
+
                 {/* Admin Button in mobile */}
                 <motion.div
-                  className="p-4 pt-2 border-t border-slate-100"
-                  custom={navLinks.length}
+                  className="p-4 pt-0"
+                  custom={navLinks.length + 1}
                   variants={mobileItemVariants}
                   initial="hidden"
                   animate="visible"
@@ -373,6 +401,7 @@ const Navbar = () => {
                     Admin Login
                   </Link>
                 </motion.div>
+
               </motion.div>
             </>
           )}
