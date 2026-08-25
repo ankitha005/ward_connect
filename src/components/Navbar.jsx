@@ -204,7 +204,7 @@ const Navbar = () => {
               </div>
             </div>
             {/* Admin CTA + Mobile Toggle */}
-            <div className="flex-1 flex items-center gap-3 justify-end">
+            <div className="flex-1 flex items-center gap-2 md:gap-3 justify-end">
               <WeatherWidget />
               {/* Dark Mode Toggle */}
               <motion.button

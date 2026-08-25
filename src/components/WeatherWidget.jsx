@@ -78,7 +78,7 @@ const WeatherWidget = () => {
   }, []);
 
   if (loading || !weatherData) return (
-    <div className="animate-pulse bg-slate-100 rounded-full h-8 w-28 hidden md:block" />
+    <div className="animate-pulse bg-slate-100 rounded-full h-8 w-20 md:w-28" />
   );
 
   const getIcon = (condition, size = 16) => {
@@ -112,24 +112,24 @@ const WeatherWidget = () => {
   const aqiInfo = getAqiInfo(weatherData.aqiIndex);
 
   return (
-    <div className="relative hidden md:block" ref={panelRef}>
+    <div className="relative" ref={panelRef}>
       {/* Trigger pill */}
       <motion.button
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         onClick={() => setIsOpen(v => !v)}
-        className={`flex items-center gap-3 px-4 py-1.5 rounded-full border shadow-sm transition-all duration-200 cursor-pointer select-none ${
+        className={`flex items-center gap-1.5 md:gap-3 px-2.5 md:px-4 py-1.5 rounded-full border shadow-sm transition-all duration-200 cursor-pointer select-none ${
           isOpen
             ? 'bg-slate-800 border-slate-700 text-white shadow-lg'
             : 'bg-white/80 backdrop-blur-sm border-slate-200 hover:bg-white hover:shadow-md'
         }`}
       >
-        <div className={`flex items-center gap-1.5 ${isOpen ? '' : 'border-r border-slate-200 pr-3'}`}>
+        <div className={`flex items-center gap-1.5 ${isOpen ? '' : 'md:border-r md:border-slate-200 md:pr-3'}`}>
           {getIcon(weatherData.condition)}
-          <span className={`font-bold text-sm ${isOpen ? 'text-white' : 'text-slate-700'}`}>{weatherData.temp}°C</span>
+          <span className={`font-bold text-sm ${isOpen ? 'text-white' : 'text-slate-700'}`}>{weatherData.temp}°</span>
         </div>
         {!isOpen && (
-          <div className="flex items-center gap-1.5">
+          <div className="hidden md:flex items-center gap-1.5">
             <span className={`w-1.5 h-1.5 rounded-full ${aqiInfo.color} animate-pulse`} />
             <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">AQI: {aqiInfo.text}</span>
           </div>
@@ -145,7 +145,7 @@ const WeatherWidget = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.97 }}
             transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-            className="absolute right-0 top-12 w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden z-50"
+            className="fixed md:absolute left-2 right-2 md:left-auto md:right-0 top-16 md:top-12 w-auto md:w-80 bg-white rounded-2xl shadow-2xl border border-slate-200 overflow-hidden overflow-y-auto max-h-[80vh] z-[100]"
           >
             {/* Header */}
             <div className="bg-gradient-to-br from-slate-800 to-slate-900 p-5 text-white">

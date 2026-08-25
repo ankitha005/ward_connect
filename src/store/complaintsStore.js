@@ -55,7 +55,7 @@ const SEED_ALERTS = [
   { id: 'alert-4', text: '🩺 HEALTH CAMP: Free medical checkup camp on June 18 at Ward Community Center. Bring Aadhaar card.', active: true, createdAt: new Date().toISOString() },
 ]
 
-const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000'
+const API_BASE = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? 'http://localhost:4000' : '')
 
 const useComplaintsStore = create(
   persist(
