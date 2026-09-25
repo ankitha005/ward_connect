@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const volunteerSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
@@ -8,7 +8,7 @@ const volunteerSchema = new mongoose.Schema({
   ward: { type: String, required: true },
   skills: [{ type: String }],
   availability: { type: String },
-  date: { type: Date, default: Date.now }
+  date: { type: Date, default: Date.now },
 });
 
-export const Volunteer = mongoose.model('Volunteer', volunteerSchema);
+export const Volunteer = mongoose.model("Volunteer", volunteerSchema);

@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const announcementSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
@@ -10,4 +10,4 @@ const announcementSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
 });
 
-export const Announcement = mongoose.model('Announcement', announcementSchema);
+export const Announcement = mongoose.model("Announcement", announcementSchema);

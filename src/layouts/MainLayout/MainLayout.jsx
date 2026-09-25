@@ -1,10 +1,10 @@
-import { Outlet } from 'react-router-dom'
-import Navbar from '../../components/Navbar'
-import Footer from '../../components/Footer'
-import EmergencyTicker from '../../components/EmergencyTicker'
-import QuickReportWidget from '../../components/QuickReportWidget'
-import AIChatbot from '../../components/AIChatbot'
-import ScrollToTop from '../../components/ScrollToTop'
+import { Outlet } from "react-router-dom";
+import Navbar from "../../components/Navbar";
+import Footer from "../../components/Footer";
+import EmergencyTicker from "../../components/EmergencyTicker";
+import QuickReportWidget from "../../components/QuickReportWidget";
+import AIChatbot from "../../components/AIChatbot";
+import ScrollToTop from "../../components/ScrollToTop";
 
 const MainLayout = () => {
   return (
@@ -13,7 +13,7 @@ const MainLayout = () => {
       {/* Fixed Navbar sits at top on its own */}
       <Navbar />
       {/* EmergencyTicker appears below the fixed navbar without overlapping */}
-      <div className="fixed left-0 right-0 z-[55]" style={{ top: '73px' }}>
+      <div className="fixed left-0 right-0 z-[55]" style={{ top: "73px" }}>
         <EmergencyTicker />
       </div>
       <main className="flex-grow">
@@ -23,7 +23,7 @@ const MainLayout = () => {
       <QuickReportWidget />
       <AIChatbot />
     </div>
-  )
-}
+  );
+};
 
-export default MainLayout
+export default MainLayout;

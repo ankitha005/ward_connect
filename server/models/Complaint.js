@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const complaintSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true }, // E.g. JYN-2026-ABC-00001
@@ -14,14 +14,16 @@ const complaintSchema = new mongoose.Schema({
   lng: { type: Number },
   photoData: { type: String },
   afterPhotoData: { type: String },
-  status: { type: String, default: 'Pending' },
+  status: { type: String, default: "Pending" },
   upvotes: [{ type: String }], // Array of voterIds
-  statusHistory: [{
-    status: String,
-    note: String,
-    date: { type: Date, default: Date.now }
-  }],
-  createdAt: { type: Date, default: Date.now }
+  statusHistory: [
+    {
+      status: String,
+      note: String,
+      date: { type: Date, default: Date.now },
+    },
+  ],
+  createdAt: { type: Date, default: Date.now },
 });
 
-export const Complaint = mongoose.model('Complaint', complaintSchema);
+export const Complaint = mongoose.model("Complaint", complaintSchema);

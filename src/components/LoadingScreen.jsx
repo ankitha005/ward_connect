@@ -1,72 +1,76 @@
-import { motion, AnimatePresence } from 'framer-motion'
-import { useEffect, useState } from 'react'
+import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const LOADING_STEPS = [
-  'Connecting to ward database...',
-  'Loading complaint records...',
-  'Fetching announcements...',
-  'Initializing AI systems...',
-  'Almost ready...',
-]
+  "Connecting to ward database...",
+  "Loading complaint records...",
+  "Fetching announcements...",
+  "Initializing AI systems...",
+  "Almost ready...",
+];
 
 export default function LoadingScreen({ onComplete }) {
-  const [stepIdx, setStepIdx] = useState(0)
-  const [progress, setProgress] = useState(0)
+  const [stepIdx, setStepIdx] = useState(0);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Progress bar from 0 to 100 over 2.8s
+    // Progress bar from 0 to 100 over 1.3s
     const progressTimer = setInterval(() => {
-      setProgress(p => {
-        if (p >= 100) { clearInterval(progressTimer); return 100 }
-        return p + 2
-      })
-    }, 56)
+      setProgress((p) => {
+        if (p >= 100) {
+          clearInterval(progressTimer);
+          return 100;
+        }
+        return p + 4;
+      });
+    }, 50);
 
     // Cycle loading text
     const textTimer = setInterval(() => {
-      setStepIdx(i => Math.min(i + 1, LOADING_STEPS.length - 1))
-    }, 560)
+      setStepIdx((i) => Math.min(i + 1, LOADING_STEPS.length - 1));
+    }, 280);
 
-    // Finish after 3s
+    // Finish after 1.5s
     const doneTimer = setTimeout(() => {
-      clearInterval(progressTimer)
-      clearInterval(textTimer)
-      onComplete()
-    }, 3000)
+      clearInterval(progressTimer);
+      clearInterval(textTimer);
+      onComplete();
+    }, 1500);
 
     return () => {
-      clearInterval(progressTimer)
-      clearInterval(textTimer)
-      clearTimeout(doneTimer)
-    }
-  }, [onComplete])
+      clearInterval(progressTimer);
+      clearInterval(textTimer);
+      clearTimeout(doneTimer);
+    };
+  }, [onComplete]);
 
   return (
     <motion.div
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.05 }}
-      transition={{ duration: 0.5, ease: 'easeInOut' }}
+      transition={{ duration: 0.5, ease: "easeInOut" }}
       className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[#0a0f1e]"
     >
       {/* Animated background gradient orbs */}
+      {/* Static gradient orbs — no animation, no GPU overhead */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <motion.div
-          animate={{ scale: [1, 1.3, 1], opacity: [0.15, 0.25, 0.15] }}
-          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-          className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full"
-          style={{ background: 'radial-gradient(circle, #DC2626 0%, transparent 70%)' }}
+        <div
+          className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full opacity-20"
+          style={{
+            background: "radial-gradient(circle, #DC2626 0%, transparent 70%)",
+          }}
         />
-        <motion.div
-          animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.2, 0.1] }}
-          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-          className="absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full"
-          style={{ background: 'radial-gradient(circle, #138808 0%, transparent 70%)' }}
+        <div
+          className="absolute -bottom-40 -right-40 w-[500px] h-[500px] rounded-full opacity-15"
+          style={{
+            background: "radial-gradient(circle, #138808 0%, transparent 70%)",
+          }}
         />
-        <motion.div
-          animate={{ scale: [1, 1.15, 1], opacity: [0.08, 0.18, 0.08] }}
-          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 2 }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full"
-          style={{ background: 'radial-gradient(circle, #FF9933 0%, transparent 70%)' }}
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] rounded-full opacity-10"
+          style={{
+            background: "radial-gradient(circle, #FF9933 0%, transparent 70%)",
+          }}
         />
       </div>
 
@@ -74,34 +78,45 @@ export default function LoadingScreen({ onComplete }) {
       <div
         className="absolute inset-0 opacity-5"
         style={{
-          backgroundImage: 'linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)',
-          backgroundSize: '60px 60px'
+          backgroundImage:
+            "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)",
+          backgroundSize: "60px 60px",
         }}
       />
 
       {/* Main content */}
       <div className="relative z-10 flex flex-col items-center gap-8 px-6 max-w-sm w-full">
-
         {/* Logo / Brand Mark */}
         <motion.div
           initial={{ scale: 0, rotate: -180 }}
           animate={{ scale: 1, rotate: 0 }}
-          transition={{ type: 'spring', stiffness: 200, damping: 18, delay: 0.1 }}
+          transition={{
+            type: "spring",
+            stiffness: 200,
+            damping: 18,
+            delay: 0.1,
+          }}
           className="relative"
         >
           {/* Outer pulsing ring */}
-          <motion.div
-            animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.1, 0.4] }}
-            transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute inset-0 rounded-full"
-            style={{ background: 'conic-gradient(from 0deg, #DC2626, #FF9933, #138808, #DC2626)', filter: 'blur(8px)' }}
+          <div
+            className="absolute -inset-1 rounded-full opacity-30"
+            style={{
+              background:
+                "conic-gradient(from 0deg, #DC2626, #FF9933, #138808, #DC2626)",
+            }}
           />
           <div
             className="relative w-28 h-28 rounded-full flex items-center justify-center border-4 border-white/10 shadow-2xl"
-            style={{ background: 'conic-gradient(from 0deg, #DC2626, #FF9933, #138808, #DC2626)' }}
+            style={{
+              background:
+                "conic-gradient(from 0deg, #DC2626, #FF9933, #138808, #DC2626)",
+            }}
           >
             <div className="w-20 h-20 rounded-full bg-[#0a0f1e] flex items-center justify-center">
-              <span className="text-3xl font-black text-white tracking-tight">A</span>
+              <span className="text-3xl font-black text-white tracking-tight">
+                A
+              </span>
             </div>
           </div>
         </motion.div>
@@ -114,7 +129,15 @@ export default function LoadingScreen({ onComplete }) {
           className="text-center"
         >
           <h1 className="text-4xl font-black text-white tracking-tight leading-none">
-            ADDA<span className="text-transparent bg-clip-text" style={{ backgroundImage: 'linear-gradient(to right, #FF9933, #DC2626)' }}>_360</span>
+            ADDA
+            <span
+              className="text-transparent bg-clip-text"
+              style={{
+                backgroundImage: "linear-gradient(to right, #FF9933, #DC2626)",
+              }}
+            >
+              _360
+            </span>
           </h1>
           <p className="text-slate-400 text-sm font-semibold mt-2 tracking-widest uppercase">
             Ward Connect Platform
@@ -162,8 +185,9 @@ export default function LoadingScreen({ onComplete }) {
               className="h-full rounded-full"
               style={{
                 width: `${progress}%`,
-                background: 'linear-gradient(to right, #DC2626, #FF9933, #138808)',
-                boxShadow: '0 0 12px rgba(255,153,51,0.6)'
+                background:
+                  "linear-gradient(to right, #DC2626, #FF9933, #138808)",
+                boxShadow: "0 0 12px rgba(255,153,51,0.6)",
               }}
               transition={{ duration: 0.1 }}
             />
@@ -177,12 +201,11 @@ export default function LoadingScreen({ onComplete }) {
 
         {/* Floating dots */}
         <div className="flex items-center gap-2">
-          {[0, 1, 2, 3].map(i => (
-            <motion.div
+          {[0, 1, 2, 3].map((i) => (
+            <div
               key={i}
-              animate={{ scale: [1, 1.5, 1], opacity: [0.4, 1, 0.4] }}
-              transition={{ duration: 1, repeat: Infinity, delay: i * 0.2 }}
               className="w-1.5 h-1.5 rounded-full bg-brand-orange"
+              style={{ opacity: 0.4 + i * 0.2 }}
             />
           ))}
         </div>
@@ -198,5 +221,5 @@ export default function LoadingScreen({ onComplete }) {
         Empowering Bengaluru's Citizens
       </motion.p>
     </motion.div>
-  )
+  );
 }

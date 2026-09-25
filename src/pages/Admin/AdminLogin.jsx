@@ -1,9 +1,16 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Lock, User, Eye, EyeOff, AlertCircle, ShieldCheck } from 'lucide-react'
-import useComplaintsStore from '../../store/complaintsStore'
-import logo from '../../assets/logo.svg'
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Lock,
+  User,
+  Eye,
+  EyeOff,
+  AlertCircle,
+  ShieldCheck,
+} from "lucide-react";
+import useComplaintsStore from "../../store/complaintsStore";
+import logo from "../../assets/logo.svg";
 
 /* ─── Logo Fill Loading Component ─── */
 function LogoFillLoader() {
@@ -11,7 +18,11 @@ function LogoFillLoader() {
     <div className="flex flex-col items-center justify-center gap-6 py-4">
       <div className="relative w-24 h-24 flex items-center justify-center">
         {/* dim base logo */}
-        <img src={logo} alt="" className="absolute inset-0 w-full h-full object-contain opacity-15" />
+        <img
+          src={logo}
+          alt=""
+          className="absolute inset-0 w-full h-full object-contain opacity-15"
+        />
         {/* animated fill overlay using clip-path */}
         <img
           src={logo}
@@ -23,34 +34,36 @@ function LogoFillLoader() {
       </div>
       <div className="text-center">
         <p className="text-dark font-bold text-base">Verifying Credentials</p>
-        <p className="text-slate-400 text-xs mt-1 font-medium">Please wait a moment…</p>
+        <p className="text-slate-400 text-xs mt-1 font-medium">
+          Please wait a moment…
+        </p>
       </div>
       {/* progress bar */}
       <div className="w-48 h-1 bg-slate-100 rounded-full overflow-hidden">
         <div className="h-full bg-primary rounded-full logo-progress-anim" />
       </div>
     </div>
-  )
+  );
 }
 
 export default function AdminLogin() {
-  const adminLogin = useComplaintsStore(s => s.adminLogin)
-  const navigate = useNavigate()
-  const [form, setForm] = useState({ username: '', password: '' })
-  const [showPw, setShowPw] = useState(false)
-  const [error, setError] = useState('')
-  const [loading, setLoading] = useState(false)
+  const adminLogin = useComplaintsStore((s) => s.adminLogin);
+  const navigate = useNavigate();
+  const [form, setForm] = useState({ username: "", password: "" });
+  const [showPw, setShowPw] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handle = async (e) => {
-    e.preventDefault()
-    setError('')
-    setLoading(true)
-    await new Promise(r => setTimeout(r, 1800))
-    const ok = await adminLogin(form.username, form.password)
-    setLoading(false)
-    if (ok) navigate('/admin/dashboard')
-    else setError('Invalid username or password. Please try again.')
-  }
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    await new Promise((r) => setTimeout(r, 1800));
+    const ok = await adminLogin(form.username, form.password);
+    setLoading(false);
+    if (ok) navigate("/admin/dashboard");
+    else setError("Invalid username or password. Please try again.");
+  };
 
   return (
     <div className="min-h-screen bg-dark flex items-center justify-center px-4 overflow-hidden">
@@ -59,14 +72,20 @@ export default function AdminLogin() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(255,107,0,0.18),transparent)]" />
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_80%_80%,rgba(59,130,246,0.08),transparent)]" />
         {/* subtle grid */}
-        <div className="absolute inset-0 opacity-[0.04]"
-          style={{ backgroundImage: 'linear-gradient(#fff 1px, transparent 1px), linear-gradient(to right, #fff 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(to right, #fff 1px, transparent 1px)",
+            backgroundSize: "40px 40px",
+          }}
+        />
       </div>
 
       <motion.div
         initial={{ opacity: 0, y: 40, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
         className="w-full max-w-md relative z-10"
       >
         {/* Glow behind card */}
@@ -99,10 +118,18 @@ export default function AdminLogin() {
                   {/* Logo & Header */}
                   <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/10 to-orange-50 mb-4 border border-primary/10 shadow-inner">
-                      <img src={logo} alt="ADDA_360" className="h-14 w-14 object-contain" />
+                      <img
+                        src={logo}
+                        alt="Bengaluru Civic Connect"
+                        className="h-14 w-14 object-contain"
+                      />
                     </div>
-                    <h1 className="text-2xl font-bold text-dark">Admin Portal</h1>
-                    <p className="text-slate-400 text-sm mt-1.5 font-medium">ADDA_360 Ward Connect · Authorized Access Only</p>
+                    <h1 className="text-2xl font-bold text-dark">
+                      Admin Portal
+                    </h1>
+                    <p className="text-slate-400 text-sm mt-1.5 font-medium">
+                      Bengaluru Civic Connect · Authorized Access Only
+                    </p>
                   </div>
 
                   <form onSubmit={handle} className="space-y-5">
@@ -116,7 +143,13 @@ export default function AdminLogin() {
                         <input
                           type="text"
                           value={form.username}
-                          onChange={e => { setForm(f => ({ ...f, username: e.target.value })); setError('') }}
+                          onChange={(e) => {
+                            setForm((f) => ({
+                              ...f,
+                              username: e.target.value,
+                            }));
+                            setError("");
+                          }}
                           className="input-style pl-10 transition-shadow focus:shadow-lg focus:shadow-primary/10"
                           placeholder="Enter username"
                           autoComplete="username"
@@ -132,15 +165,24 @@ export default function AdminLogin() {
                           <Lock size={16} />
                         </div>
                         <input
-                          type={showPw ? 'text' : 'password'}
+                          type={showPw ? "text" : "password"}
                           value={form.password}
-                          onChange={e => { setForm(f => ({ ...f, password: e.target.value })); setError('') }}
+                          onChange={(e) => {
+                            setForm((f) => ({
+                              ...f,
+                              password: e.target.value,
+                            }));
+                            setError("");
+                          }}
                           className="input-style pl-10 pr-12 transition-shadow focus:shadow-lg focus:shadow-primary/10"
                           placeholder="Enter password"
                           autoComplete="current-password"
                         />
-                        <button type="button" onClick={() => setShowPw(v => !v)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors p-1">
+                        <button
+                          type="button"
+                          onClick={() => setShowPw((v) => !v)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors p-1"
+                        >
                           {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
                       </div>
@@ -151,7 +193,7 @@ export default function AdminLogin() {
                       {error && (
                         <motion.div
                           initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: 'auto' }}
+                          animate={{ opacity: 1, height: "auto" }}
                           exit={{ opacity: 0, height: 0 }}
                           className="flex items-center gap-2 text-red-500 text-sm font-semibold bg-red-50 border border-red-100 rounded-xl px-4 py-3"
                         >
@@ -171,7 +213,7 @@ export default function AdminLogin() {
                   </form>
 
                   <p className="text-center text-[10px] text-slate-300 mt-8 uppercase tracking-widest">
-                    Restricted Access · ADDA_360 Ward Management System
+                    Restricted Access · Bengaluru Civic Ward Management System
                   </p>
                 </motion.div>
               )}
@@ -206,5 +248,5 @@ export default function AdminLogin() {
         }
       `}</style>
     </div>
-  )
+  );
 }

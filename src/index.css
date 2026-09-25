@@ -1,13 +1,13 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #DC2626;
-  --color-secondary: #F59E0B;
-  --color-dark: #0F172A;
-  --color-accent: #EAB308;
-  --color-success: #22C55E;
-  --color-background: #F8FAFC;
-  --color-brand-orange: #FF9933;
+  --color-primary: #dc2626;
+  --color-secondary: #f59e0b;
+  --color-dark: #0f172a;
+  --color-accent: #eab308;
+  --color-success: #22c55e;
+  --color-background: #f8fafc;
+  --color-brand-orange: #ff9933;
   --color-brand-green: #138808;
 
   --font-poppins: "Poppins", sans-serif;
@@ -16,7 +16,7 @@
 }
 
 :root {
-  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-family: "Plus Jakarta Sans", "Inter", sans-serif;
 }
 
 @layer base {
@@ -29,21 +29,43 @@
     background-color: #0f172a;
     color: #e2e8f0;
   }
-  .dark .bg-white { background-color: #1e293b !important; }
-  .dark .bg-slate-50 { background-color: #0f172a !important; }
-  .dark .bg-slate-100 { background-color: #1e293b !important; }
-  .dark .text-slate-700 { color: #cbd5e1 !important; }
-  .dark .text-slate-800 { color: #e2e8f0 !important; }
-  .dark .text-slate-900 { color: #f8fafc !important; }
-  .dark .text-slate-500 { color: #94a3b8 !important; }
-  .dark .border-slate-100 { border-color: #334155 !important; }
-  .dark .border-slate-200 { border-color: #334155 !important; }
-  .dark .shadow-sm { box-shadow: 0 1px 2px rgba(0,0,0,0.4) !important; }
-  .dark .shadow-xl { box-shadow: 0 20px 40px rgba(0,0,0,0.5) !important; }
+  .dark .bg-white {
+    background-color: #1e293b !important;
+  }
+  .dark .bg-slate-50 {
+    background-color: #0f172a !important;
+  }
+  .dark .bg-slate-100 {
+    background-color: #1e293b !important;
+  }
+  .dark .text-slate-700 {
+    color: #cbd5e1 !important;
+  }
+  .dark .text-slate-800 {
+    color: #e2e8f0 !important;
+  }
+  .dark .text-slate-900 {
+    color: #f8fafc !important;
+  }
+  .dark .text-slate-500 {
+    color: #94a3b8 !important;
+  }
+  .dark .border-slate-100 {
+    border-color: #334155 !important;
+  }
+  .dark .border-slate-200 {
+    border-color: #334155 !important;
+  }
+  .dark .shadow-sm {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4) !important;
+  }
+  .dark .shadow-xl {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5) !important;
+  }
 }
 
 .glass-nav {
-  @apply bg-white/80 backdrop-blur-md border-b border-white/20 sticky top-0 z-50;
+  @apply bg-white/80 backdrop-blur-sm border-b border-white/20 sticky top-0 z-50;
 }
 
 .btn-primary {
@@ -96,7 +118,7 @@
 
 /* Added Standard Utility Classes */
 .glass-panel {
-  @apply bg-white/95 backdrop-blur-2xl rounded-2xl shadow-2xl shadow-black/15 border border-slate-100;
+  @apply bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl shadow-black/10 border border-slate-100;
 }
 
 .text-gradient-brand {

@@ -1,40 +1,40 @@
-import { useEffect, useState, useCallback } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
-import { AnimatePresence } from 'framer-motion'
-import useComplaintsStore from './store/complaintsStore'
-import MainLayout from './layouts/MainLayout/MainLayout'
-import Home from './pages/Home/Home'
-import Complaints from './pages/Complaints/Complaints'
-import Announcements from './pages/Announcements/Announcements'
-import Schemes from './pages/Schemes/Schemes'
-import Projects from './pages/Projects'
-import TrackComplaint from './pages/TrackComplaint/TrackComplaint'
-import AdminLogin from './pages/Admin/AdminLogin'
-import AdminDashboard from './admin/Dashboard/AdminDashboard'
-import SocialActivity from './pages/Gallery/SocialActivity'
-import WardDirectory from './pages/Directory/WardDirectory'
-import Gallery from './pages/Gallery/Gallery'
-import Volunteer from './pages/Volunteer/Volunteer'
-import Survey from './pages/Survey/Survey'
-import LoadingScreen from './components/LoadingScreen'
+import { useEffect, useState, useCallback } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
+import useComplaintsStore from "./store/complaintsStore";
+import MainLayout from "./layouts/MainLayout/MainLayout";
+import Home from "./pages/Home/Home";
+import Complaints from "./pages/Complaints/Complaints";
+import Announcements from "./pages/Announcements/Announcements";
+import Schemes from "./pages/Schemes/Schemes";
+import Projects from "./pages/Projects";
+import TrackComplaint from "./pages/TrackComplaint/TrackComplaint";
+import AdminLogin from "./pages/Admin/AdminLogin";
+import AdminDashboard from "./admin/Dashboard/AdminDashboard";
+import SocialActivity from "./pages/Gallery/SocialActivity";
+import WardDirectory from "./pages/Directory/WardDirectory";
+import Gallery from "./pages/Gallery/Gallery";
+import Volunteer from "./pages/Volunteer/Volunteer";
+import Survey from "./pages/Survey/Survey";
+import LoadingScreen from "./components/LoadingScreen";
 
 function App() {
-  const [isLoading, setIsLoading] = useState(true)
-  const fetchComplaints = useComplaintsStore(s => s.fetchComplaints)
-  const fetchAnnouncements = useComplaintsStore(s => s.fetchAnnouncements)
-  const fetchSurveys = useComplaintsStore(s => s.fetchSurveys)
-  const fetchVolunteers = useComplaintsStore(s => s.fetchVolunteers)
+  const [isLoading, setIsLoading] = useState(true);
+  const fetchComplaints = useComplaintsStore((s) => s.fetchComplaints);
+  const fetchAnnouncements = useComplaintsStore((s) => s.fetchAnnouncements);
+  const fetchSurveys = useComplaintsStore((s) => s.fetchSurveys);
+  const fetchVolunteers = useComplaintsStore((s) => s.fetchVolunteers);
 
   const handleLoadingComplete = useCallback(() => {
-    setIsLoading(false)
-  }, [])
-  
+    setIsLoading(false);
+  }, []);
+
   useEffect(() => {
-    fetchComplaints()
-    fetchAnnouncements()
-    fetchSurveys()
-    fetchVolunteers()
-  }, [fetchComplaints, fetchAnnouncements, fetchSurveys, fetchVolunteers])
+    fetchComplaints();
+    fetchAnnouncements();
+    fetchSurveys();
+    fetchVolunteers();
+  }, [fetchComplaints, fetchAnnouncements, fetchSurveys, fetchVolunteers]);
 
   return (
     <>
@@ -65,8 +65,7 @@ function App() {
         </Routes>
       )}
     </>
-  )
+  );
 }
 
-export default App
-
+export default App;
