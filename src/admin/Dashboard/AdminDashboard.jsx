@@ -31,6 +31,8 @@ import {
   EyeOff,
   Trash2,
   Sparkles,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { Bar } from "react-chartjs-2";
 import {
@@ -63,10 +65,10 @@ const WARD_LABELS = {
   jayanagar: "Jayanagar",
 };
 const STATUS_COLORS = {
-  Pending: "bg-amber-100 text-amber-700 border-amber-200",
-  "In Progress": "bg-blue-100 text-blue-700 border-blue-200",
-  Resolved: "bg-green-100 text-green-700 border-green-200",
-  Rejected: "bg-red-100 text-red-600 border-red-200",
+  Pending: "bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/30",
+  "In Progress": "bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/30",
+  Resolved: "bg-green-100 dark:bg-emerald-950/50 text-green-700 dark:text-emerald-300 border-green-200 dark:border-emerald-500/30",
+  Rejected: "bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-300 border-red-200 dark:border-red-500/30",
 };
 
 // ─── Heatmap Component ───────────────────────────────────────
@@ -247,16 +249,16 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
 
   return (
     <div className="fixed inset-0 z-50 flex">
-      <div className="flex-1 bg-black/40 backdrop-blur-sm" onClick={onClose} />
+      <div className="flex-1 bg-black/60 backdrop-blur-xs" onClick={onClose} />
       <motion.div
         initial={{ x: "100%" }}
         animate={{ x: 0 }}
         exit={{ x: "100%" }}
         transition={{ type: "spring", stiffness: 300, damping: 35 }}
-        className="w-full max-w-lg bg-white shadow-2xl overflow-y-auto"
+        className="w-full max-w-lg bg-white dark:bg-slate-900 border-l border-slate-100 dark:border-slate-800 shadow-2xl overflow-y-auto"
       >
         {/* Drawer header */}
-        <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between z-10">
+        <div className="sticky top-0 bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 px-6 py-4 flex items-center justify-between z-10">
           <div>
             <div className="font-mono font-bold text-primary text-base">
               {complaint.id}
@@ -267,7 +269,7 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-500"
+            className="p-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors text-slate-500 dark:text-slate-400"
           >
             <X size={20} />
           </button>
@@ -279,7 +281,7 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
             <h4 className="label-style flex items-center gap-1.5 mb-4">
               <User size={12} /> Citizen Details
             </h4>
-            <div className="bg-slate-50 rounded-2xl p-5 space-y-3">
+            <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-5 space-y-3 border border-transparent dark:border-slate-700/60">
               <Row label="Full Name" value={complaint.fullName} />
               <Row
                 label="Mobile"
@@ -304,7 +306,7 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
             <h4 className="label-style flex items-center gap-1.5 mb-4">
               <MapPin size={12} /> Location
             </h4>
-            <div className="bg-slate-50 rounded-2xl p-5 space-y-3">
+            <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-5 space-y-3 border border-transparent dark:border-slate-700/60">
               <Row label="Ward" value={WARD_LABELS[complaint.ward]} />
               <Row label="Address" value={complaint.address} />
               {complaint.area && (
@@ -333,7 +335,7 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
             <h4 className="label-style flex items-center gap-1.5 mb-4">
               <FileText size={12} /> Issue Details
             </h4>
-            <div className="bg-slate-50 rounded-2xl p-5 space-y-3">
+            <div className="bg-slate-50 dark:bg-slate-800/60 rounded-2xl p-5 space-y-3 border border-transparent dark:border-slate-700/60">
               <Row label="Category" value={complaint.category} />
               <Row
                 label="Priority"
@@ -341,12 +343,12 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
                   <span
                     className={`text-xs font-bold px-2.5 py-1 rounded-full ${
                       complaint.priority === "Urgent"
-                        ? "bg-red-100 text-red-600"
+                        ? "bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-300"
                         : complaint.priority === "High"
-                          ? "bg-amber-100 text-amber-700"
+                          ? "bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300"
                           : complaint.priority === "Medium"
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-slate-100 text-slate-500"
+                            ? "bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300"
+                            : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300"
                     }`}
                   >
                     {complaint.priority}
@@ -357,7 +359,7 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5">
                   Description
                 </div>
-                <p className="text-slate-600 text-sm leading-relaxed font-medium">
+                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed font-medium">
                   {complaint.description}
                 </p>
               </div>
@@ -370,7 +372,7 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
                   <img
                     src={complaint.photoData}
                     alt="Issue"
-                    className="w-full h-48 object-cover rounded-xl border border-slate-200"
+                    className="w-full h-48 object-cover rounded-xl border border-slate-200 dark:border-slate-700"
                   />
                 </div>
               )}
@@ -387,18 +389,18 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
                 <div key={i} className="flex gap-3">
                   <div className="flex flex-col items-center">
                     <div
-                      className={`w-3 h-3 rounded-full mt-1 ${i === complaint.statusHistory.length - 1 ? "bg-primary" : "bg-slate-300"}`}
+                      className={`w-3 h-3 rounded-full mt-1 ${i === complaint.statusHistory.length - 1 ? "bg-primary" : "bg-slate-300 dark:bg-slate-600"}`}
                     />
                     {i < complaint.statusHistory.length - 1 && (
-                      <div className="w-0.5 h-6 bg-slate-200 mt-1" />
+                      <div className="w-0.5 h-6 bg-slate-200 dark:bg-slate-700 mt-1" />
                     )}
                   </div>
                   <div>
-                    <div className="text-sm font-bold text-dark">
+                    <div className="text-sm font-bold text-dark dark:text-white">
                       {h.status}
                     </div>
                     {h.note && (
-                      <div className="text-xs text-slate-500 font-medium">
+                      <div className="text-xs text-slate-500 dark:text-slate-400 font-medium">
                         {h.note}
                       </div>
                     )}
@@ -412,8 +414,8 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
           </section>
 
           {/* Update Status */}
-          <section className="bg-primary/5 border border-primary/10 rounded-2xl p-5 space-y-4">
-            <h4 className="font-bold text-dark text-sm">
+          <section className="bg-primary/5 dark:bg-slate-800/80 border border-primary/10 dark:border-slate-700 rounded-2xl p-5 space-y-4">
+            <h4 className="font-bold text-dark dark:text-white text-sm">
               Update Complaint Status
             </h4>
             <div>
@@ -451,8 +453,8 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
             </div>
 
             {newStatus === "Resolved" && complaint.photoData && (
-              <div className="bg-green-50/50 p-4 rounded-xl border border-green-100">
-                <label className="label-style text-green-700">
+              <div className="bg-green-50/50 dark:bg-emerald-950/40 p-4 rounded-xl border border-green-100 dark:border-emerald-500/30">
+                <label className="label-style text-green-700 dark:text-emerald-400">
                   Upload "After" Image (Social Activity Showcase)
                 </label>
                 <input
@@ -466,7 +468,7 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
                     file:bg-green-100 file:text-green-700
                     hover:file:bg-green-200 file:transition-colors file:cursor-pointer"
                 />
-                <p className="text-[10px] text-slate-500 mt-2 font-medium">
+                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-2 font-medium">
                   Providing an After image will automatically publish this
                   resolution as a "Before & After" slide on the Social Activity
                   page.
@@ -475,7 +477,7 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
                   <img
                     src={afterImage}
                     alt="After"
-                    className="mt-3 w-full h-32 object-cover rounded-xl shadow-sm border border-green-200"
+                    className="mt-3 w-full h-32 object-cover rounded-xl shadow-sm border border-green-200 dark:border-emerald-500/40"
                   />
                 )}
               </div>
@@ -498,8 +500,8 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
 function Row({ label, value }) {
   return (
     <div className="flex justify-between items-start gap-4 text-sm">
-      <span className="text-slate-400 font-semibold shrink-0">{label}</span>
-      <span className="font-bold text-dark text-right">{value}</span>
+      <span className="text-slate-400 dark:text-slate-400 font-semibold shrink-0">{label}</span>
+      <span className="font-bold text-dark dark:text-white text-right">{value}</span>
     </div>
   );
 }
@@ -695,6 +697,19 @@ export default function AdminDashboard() {
   const [dateEnd, setDateEnd] = useState("");
   const [selected, setSelected] = useState(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
+  const [darkMode, setDarkMode] = useState(
+    () => localStorage.getItem("darkMode") === "true" || document.documentElement.classList.contains("dark")
+  );
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("darkMode", "true");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("darkMode", "false");
+    }
+  }, [darkMode]);
 
   // Safe session check: if not logged in or no valid token, redirect to login
   useEffect(() => {
@@ -716,10 +731,10 @@ export default function AdminDashboard() {
 
   if (checkingAuth) {
     return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 flex items-center justify-center transition-colors">
         <div className="flex flex-col items-center gap-3">
           <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+          <span className="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">
             Opening Admin Workspace...
           </span>
         </div>
@@ -807,52 +822,80 @@ export default function AdminDashboard() {
   const chartOpts = {
     responsive: true,
     maintainAspectRatio: false,
-    plugins: { legend: { display: false } },
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        backgroundColor: darkMode ? "#111827" : "#ffffff",
+        titleColor: darkMode ? "#ffffff" : "#0f172a",
+        bodyColor: darkMode ? "#cbd5e1" : "#334155",
+        borderColor: darkMode ? "#1e293b" : "#e2e8f0",
+        borderWidth: 1,
+      },
+    },
     scales: {
       y: {
         beginAtZero: true,
-        grid: { color: "rgba(0,0,0,0.04)" },
-        ticks: { stepSize: 1 },
+        grid: { color: darkMode ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.04)" },
+        ticks: { stepSize: 1, color: darkMode ? "#94a3b8" : "#64748b" },
       },
-      x: { grid: { display: false } },
+      x: {
+        grid: { display: false },
+        ticks: { color: darkMode ? "#94a3b8" : "#64748b" },
+      },
     },
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 flex flex-col transition-colors duration-300">
       {/* Top Bar */}
-      <header className="bg-white border-b border-slate-100 px-4 sm:px-6 py-3.5 flex items-center justify-between sticky top-0 z-40 shadow-xs">
+      <header className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 px-4 sm:px-6 py-3.5 flex items-center justify-between sticky top-0 z-40 shadow-xs">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 bg-gradient-to-br from-primary to-orange-500 rounded-xl flex items-center justify-center text-white font-black text-sm shadow-md shadow-primary/20">
             A
           </div>
           <div>
-            <div className="font-extrabold text-dark text-sm flex items-center gap-2">
+            <div className="font-extrabold text-dark dark:text-white text-sm flex items-center gap-2">
               Ward Admin Panel
-              <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-full">
+              <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/80 dark:border-emerald-500/30 px-2 py-0.5 rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                 Active Session ({adminUser || "admin"})
               </span>
             </div>
-            <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
+            <div className="text-[10px] text-slate-400 dark:text-slate-500 font-semibold uppercase tracking-wider">
               Bengaluru Civic Connect · Municipal Auth
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Dark Mode Toggle */}
+          <button
+            onClick={() => setDarkMode(!darkMode)}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-amber-300 hover:bg-slate-50 dark:hover:bg-slate-700 text-xs font-bold transition-all cursor-pointer shadow-2xs"
+            title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+          >
+            {darkMode ? (
+              <Sun size={14} className="text-amber-400" />
+            ) : (
+              <Moon size={14} className="text-slate-600" />
+            )}
+            <span className="hidden sm:inline">
+              {darkMode ? "Light" : "Dark"}
+            </span>
+          </button>
+
           <button
             onClick={() => navigate("/")}
-            className="hidden sm:flex items-center gap-1.5 text-slate-600 hover:text-dark text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-all cursor-pointer"
+            className="hidden sm:flex items-center gap-1.5 text-slate-600 dark:text-slate-300 hover:text-dark dark:hover:text-white text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all cursor-pointer"
             title="Open Citizen Portal in a new tab"
           >
-            <Eye size={14} className="text-slate-500" />
+            <Eye size={14} className="text-slate-500 dark:text-slate-400" />
             <span>Citizen Portal</span>
           </button>
 
           <button
             onClick={() => setShowLogoutModal(true)}
-            className="flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-white bg-red-50 hover:bg-red-600 border border-red-200 hover:border-red-600 px-3.5 py-1.5 rounded-xl transition-all shadow-2xs hover:shadow-sm cursor-pointer"
+            className="flex items-center gap-1.5 text-xs font-bold text-red-600 dark:text-red-400 hover:text-white bg-red-50 dark:bg-red-950/40 hover:bg-red-600 dark:hover:bg-red-600 border border-red-200 dark:border-red-500/30 hover:border-red-600 px-3.5 py-1.5 rounded-xl transition-all shadow-2xs hover:shadow-sm cursor-pointer"
           >
             <LogOut size={14} />
             <span>Sign Out</span>
@@ -861,7 +904,7 @@ export default function AdminDashboard() {
       </header>
 
       {/* Tab Navigation */}
-      <div className="bg-white border-b border-slate-100 px-6">
+      <div className="bg-white dark:bg-slate-900 border-b border-slate-100 dark:border-slate-800 px-6">
         <div className="max-w-7xl mx-auto flex gap-1">
           {TABS.map((t) => (
             <button
@@ -870,7 +913,7 @@ export default function AdminDashboard() {
               className={`flex items-center gap-2 px-4 py-4 text-sm font-bold border-b-2 transition-all -mb-px ${
                 tab === t.id
                   ? "border-primary text-primary"
-                  : "border-transparent text-slate-500 hover:text-dark"
+                  : "border-transparent text-slate-500 dark:text-slate-400 hover:text-dark dark:hover:text-white"
               }`}
             >
               {t.icon} {t.label}
@@ -897,22 +940,22 @@ export default function AdminDashboard() {
                   label: "Pending",
                   value: pending,
                   icon: <Clock />,
-                  color: "text-amber-500 bg-amber-50",
-                  ring: "ring-amber-200",
+                  color: "text-amber-500 bg-amber-50 dark:bg-amber-950/40",
+                  ring: "ring-amber-200 dark:ring-amber-500/30",
                 },
                 {
                   label: "In Progress",
                   value: inProgress,
                   icon: <Activity />,
-                  color: "text-blue-500 bg-blue-50",
-                  ring: "ring-blue-200",
+                  color: "text-blue-500 bg-blue-50 dark:bg-blue-950/40",
+                  ring: "ring-blue-200 dark:ring-blue-500/30",
                 },
                 {
                   label: "Resolved",
                   value: resolved,
                   icon: <CheckCircle />,
-                  color: "text-success bg-success/5",
-                  ring: "ring-green-200",
+                  color: "text-success bg-success/5 dark:bg-emerald-950/40",
+                  ring: "ring-green-200 dark:ring-emerald-500/30",
                 },
               ].map((stat, i) => (
                 <motion.div
@@ -920,17 +963,17 @@ export default function AdminDashboard() {
                   initial={{ opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.07 }}
-                  className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm"
+                  className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-5 shadow-sm"
                 >
                   <div
                     className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 ${stat.color}`}
                   >
                     {stat.icon}
                   </div>
-                  <div className="text-3xl font-bold text-dark">
+                  <div className="text-3xl font-bold text-dark dark:text-white">
                     {stat.value}
                   </div>
-                  <div className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">
+                  <div className="text-xs font-bold text-slate-400 dark:text-slate-400 uppercase tracking-widest mt-1">
                     {stat.label}
                   </div>
                 </motion.div>
@@ -966,8 +1009,8 @@ export default function AdminDashboard() {
 
             {/* Bar Chart */}
             {topCats.length > 0 && (
-              <div className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm">
-                <h3 className="font-bold text-dark mb-4 flex items-center gap-2">
+              <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 p-6 shadow-sm">
+                <h3 className="font-bold text-dark dark:text-white mb-4 flex items-center gap-2">
                   <BarChart3 size={18} className="text-primary" /> Top Issue
                   Categories
                 </h3>
@@ -991,8 +1034,8 @@ export default function AdminDashboard() {
             )}
 
             {/* Quick recent complaints */}
-            <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-              <h3 className="font-bold text-dark mb-4">Recent Complaints</h3>
+            <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6">
+              <h3 className="font-bold text-dark dark:text-white mb-4">Recent Complaints</h3>
               {complaints.slice(0, 5).length === 0 ? (
                 <p className="text-slate-400 text-sm font-medium">
                   No complaints yet.
@@ -1005,13 +1048,13 @@ export default function AdminDashboard() {
                       setSelected(c);
                       setTab("complaints");
                     }}
-                    className="flex items-center justify-between py-3 border-b border-slate-50 last:border-0 hover:bg-slate-50 -mx-2 px-2 rounded-xl cursor-pointer transition-colors group"
+                    className="flex items-center justify-between py-3 border-b border-slate-50 dark:border-slate-800 last:border-0 hover:bg-slate-50 dark:hover:bg-slate-800/60 -mx-2 px-2 rounded-xl cursor-pointer transition-colors group"
                   >
                     <div>
                       <div className="font-mono font-bold text-primary text-xs">
                         {c.id}
                       </div>
-                      <div className="text-sm font-semibold text-dark">
+                      <div className="text-sm font-semibold text-dark dark:text-white">
                         {c.fullName} · {c.category}
                       </div>
                     </div>
@@ -1031,9 +1074,9 @@ export default function AdminDashboard() {
 
         {/* ── COMPLAINTS TAB ── */}
         {tab === "complaints" && (
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm overflow-hidden">
             {/* Filters */}
-            <div className="p-5 border-b border-slate-50 flex flex-wrap gap-4 items-center justify-between">
+            <div className="p-5 border-b border-slate-50 dark:border-slate-800 flex flex-wrap gap-4 items-center justify-between">
               <div className="flex flex-wrap gap-3 items-center flex-1">
                 <div className="relative min-w-[200px]">
                   <Search
@@ -1044,13 +1087,13 @@ export default function AdminDashboard() {
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search by ID, name, mobile, etc…"
-                    className="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 rounded-xl bg-slate-50 outline-none focus:ring-2 focus:ring-primary/20 font-medium"
+                    className="w-full pl-9 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 outline-none focus:ring-2 focus:ring-primary/20 font-medium"
                   />
                 </div>
                 <select
                   value={wardFilter}
                   onChange={(e) => setWardFilter(e.target.value)}
-                  className="text-sm border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 font-semibold outline-none"
+                  className="text-sm border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 font-semibold outline-none"
                 >
                   <option value="all">All Wards</option>
                   <option value="chamrajapet">Chamrajapet</option>
@@ -1059,7 +1102,7 @@ export default function AdminDashboard() {
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="text-sm border border-slate-200 rounded-xl px-3 py-2 bg-slate-50 font-semibold outline-none"
+                  className="text-sm border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 font-semibold outline-none"
                 >
                   <option value="all">All Statuses</option>
                   {["Pending", "In Progress", "Resolved", "Rejected"].map(
@@ -1068,19 +1111,19 @@ export default function AdminDashboard() {
                     ),
                   )}
                 </select>
-                <div className="flex items-center gap-2 border border-slate-200 rounded-xl px-3 bg-slate-50">
+                <div className="flex items-center gap-2 border border-slate-200 dark:border-slate-700 rounded-xl px-3 bg-slate-50 dark:bg-slate-800">
                   <input
                     type="date"
                     value={dateStart}
                     onChange={(e) => setDateStart(e.target.value)}
-                    className="text-sm py-2 bg-transparent outline-none font-semibold text-slate-500"
+                    className="text-sm py-2 bg-transparent outline-none font-semibold text-slate-500 dark:text-slate-300"
                   />
-                  <span className="text-slate-300">-</span>
+                  <span className="text-slate-300 dark:text-slate-600">-</span>
                   <input
                     type="date"
                     value={dateEnd}
                     onChange={(e) => setDateEnd(e.target.value)}
-                    className="text-sm py-2 bg-transparent outline-none font-semibold text-slate-500"
+                    className="text-sm py-2 bg-transparent outline-none font-semibold text-slate-500 dark:text-slate-300"
                   />
                 </div>
               </div>
@@ -1091,7 +1134,7 @@ export default function AdminDashboard() {
                 <button
                   onClick={exportCSV}
                   disabled={filtered.length === 0}
-                  className="bg-dark text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-slate-800 transition-colors disabled:opacity-50"
+                  className="bg-dark dark:bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-lg hover:bg-slate-800 dark:hover:bg-slate-700 transition-colors disabled:opacity-50 border border-transparent dark:border-slate-700"
                 >
                   Export CSV
                 </button>
@@ -1108,7 +1151,7 @@ export default function AdminDashboard() {
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr className="bg-slate-50 text-slate-400 text-[10px] font-bold uppercase tracking-widest">
+                    <tr className="bg-slate-50 dark:bg-slate-800/80 text-slate-400 dark:text-slate-400 text-[10px] font-bold uppercase tracking-widest">
                       <th className="text-left px-5 py-3">Complaint ID</th>
                       <th className="text-left px-5 py-3">Name</th>
                       <th className="text-left px-5 py-3">Mobile</th>
@@ -1121,40 +1164,40 @@ export default function AdminDashboard() {
                       <th className="px-5 py-3 text-center">Details</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-50">
+                  <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                     {filtered.map((c) => (
                       <tr
                         key={c.id}
-                        className="hover:bg-slate-50 transition-colors"
+                        className="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
                       >
                         <td className="px-5 py-3 font-mono font-bold text-xs text-primary">
                           {c.id}
                         </td>
-                        <td className="px-5 py-3 font-semibold text-dark">
+                        <td className="px-5 py-3 font-semibold text-dark dark:text-white">
                           {c.fullName}
                         </td>
                         <td className="px-5 py-3">
                           <a
                             href={`tel:+91${c.mobile}`}
-                            className="flex items-center gap-1 text-slate-600 hover:text-primary font-medium transition-colors"
+                            className="flex items-center gap-1 text-slate-600 dark:text-slate-300 hover:text-primary font-medium transition-colors"
                           >
                             <Phone size={12} /> {c.mobile}
                           </a>
                         </td>
-                        <td className="px-5 py-3 text-slate-500">
+                        <td className="px-5 py-3 text-slate-500 dark:text-slate-400">
                           {WARD_LABELS[c.ward]}
                         </td>
-                        <td className="px-5 py-3 text-slate-500">
+                        <td className="px-5 py-3 text-slate-500 dark:text-slate-400">
                           {c.category}
                         </td>
                         <td className="px-5 py-3">
                           <span
                             className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                               c.priority === "Urgent"
-                                ? "bg-red-100 text-red-600"
+                                ? "bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-300"
                                 : c.priority === "High"
-                                  ? "bg-amber-100 text-amber-700"
-                                  : "bg-slate-100 text-slate-500"
+                                  ? "bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300"
+                                  : "bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300"
                             }`}
                           >
                             {c.priority}
@@ -1179,7 +1222,7 @@ export default function AdminDashboard() {
                               View
                             </a>
                           ) : (
-                            <span className="text-slate-300 text-xs">—</span>
+                            <span className="text-slate-300 dark:text-slate-600 text-xs">—</span>
                           )}
                         </td>
                         <td className="px-5 py-3 text-slate-400 text-xs">
@@ -1213,8 +1256,8 @@ export default function AdminDashboard() {
 
         {/* ── VOLUNTEERS TAB ── */}
         {tab === "volunteers" && (
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 overflow-x-auto">
-            <h3 className="font-bold text-dark mb-4 flex items-center gap-2">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6 overflow-x-auto">
+            <h3 className="font-bold text-dark dark:text-white mb-4 flex items-center gap-2">
               <Users size={18} className="text-primary" /> Registered Volunteers
               ({volunteers?.length || 0})
             </h3>
@@ -1225,7 +1268,7 @@ export default function AdminDashboard() {
             ) : (
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-100 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  <tr className="border-b border-slate-100 dark:border-slate-800 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                     <th className="pb-3 pr-4">ID</th>
                     <th className="pb-3 pr-4">Name</th>
                     <th className="pb-3 pr-4">Mobile</th>
@@ -1235,23 +1278,23 @@ export default function AdminDashboard() {
                     <th className="pb-3">Date</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50">
+                <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                   {volunteers.map((v) => (
                     <tr
                       key={v.id}
-                      className="hover:bg-slate-50 transition-colors"
+                      className="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors"
                     >
                       <td className="py-3 pr-4 font-mono text-xs font-bold text-primary">
                         {v.id}
                       </td>
-                      <td className="py-3 pr-4 font-semibold text-dark">
+                      <td className="py-3 pr-4 font-semibold text-dark dark:text-white">
                         {v.fullName}
                       </td>
-                      <td className="py-3 pr-4 font-medium text-slate-600">
+                      <td className="py-3 pr-4 font-medium text-slate-600 dark:text-slate-300">
                         {v.mobile}
                       </td>
-                      <td className="py-3 pr-4 text-slate-500">{v.ward}</td>
-                      <td className="py-3 pr-4 text-slate-500">
+                      <td className="py-3 pr-4 text-slate-500 dark:text-slate-400">{v.ward}</td>
+                      <td className="py-3 pr-4 text-slate-500 dark:text-slate-400">
                         {v.age || "--"}
                       </td>
                       <td className="py-3 pr-4">
@@ -1259,7 +1302,7 @@ export default function AdminDashboard() {
                           {v.skills?.map((s) => (
                             <span
                               key={s}
-                              className="bg-orange-50 text-orange-600 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase"
+                              className="bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 text-[10px] font-bold px-2 py-0.5 rounded-md uppercase border border-transparent dark:border-orange-500/30"
                             >
                               {s}
                             </span>
@@ -1279,8 +1322,8 @@ export default function AdminDashboard() {
 
         {/* ── SURVEY TAB ── */}
         {tab === "surveys" && (
-          <div className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 overflow-x-auto">
-            <h3 className="font-bold text-dark mb-4 flex items-center gap-2">
+          <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6 overflow-x-auto">
+            <h3 className="font-bold text-dark dark:text-white mb-4 flex items-center gap-2">
               <FileText size={18} className="text-brand-green" /> Ward Survey
               Responses ({surveys?.length || 0})
             </h3>
@@ -1291,7 +1334,7 @@ export default function AdminDashboard() {
             ) : (
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-slate-100 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                  <tr className="border-b border-slate-100 dark:border-slate-800 text-left text-[10px] font-bold text-slate-400 uppercase tracking-widest">
                     <th className="pb-3 pr-4">Citizen</th>
                     <th className="pb-3 pr-4">Ward</th>
                     <th className="pb-3 pr-4">Roads</th>
@@ -1300,26 +1343,26 @@ export default function AdminDashboard() {
                     <th className="pb-3">Date</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-50">
+                <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                   {surveys.map((s) => (
                     <tr
                       key={s.id}
-                      className="hover:bg-slate-50 transition-colors border-l-[3px] border-transparent hover:border-brand-green"
+                      className="hover:bg-slate-50 dark:hover:bg-slate-800/60 transition-colors border-l-[3px] border-transparent hover:border-brand-green"
                     >
-                      <td className="py-4 pr-4 pl-3 font-semibold text-dark">
+                      <td className="py-4 pr-4 pl-3 font-semibold text-dark dark:text-white">
                         {s.citizen.name}
                       </td>
-                      <td className="py-4 pr-4 font-medium text-slate-500">
+                      <td className="py-4 pr-4 font-medium text-slate-500 dark:text-slate-400">
                         {s.citizen.ward}
                       </td>
-                      <td className="py-4 pr-4 font-bold text-slate-700">
+                      <td className="py-4 pr-4 font-bold text-slate-700 dark:text-slate-200">
                         {s.responses.roadQuality || "--"}
                       </td>
-                      <td className="py-4 pr-4 font-bold text-slate-700">
+                      <td className="py-4 pr-4 font-bold text-slate-700 dark:text-slate-200">
                         {s.responses.safety || "--"}
                       </td>
                       <td className="py-4 pr-4">
-                        <span className="bg-green-50 text-green-700 font-bold px-3 py-1 text-xs rounded-xl">
+                        <span className="bg-green-50 dark:bg-emerald-950/40 text-green-700 dark:text-emerald-400 font-bold px-3 py-1 text-xs rounded-xl border border-transparent dark:border-emerald-500/30">
                           {s.responses.priorityArea || "--"}
                         </span>
                       </td>
@@ -1368,15 +1411,15 @@ export default function AdminDashboard() {
               initial={{ scale: 0.95, opacity: 0, y: 15 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.95, opacity: 0, y: 15 }}
-              className="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full shadow-2xl border border-slate-200 text-center relative overflow-hidden"
+              className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-7 max-w-sm w-full shadow-2xl border border-slate-200 dark:border-slate-800 text-center relative overflow-hidden"
             >
-              <div className="w-14 h-14 rounded-2xl bg-red-50 border border-red-200 text-red-500 flex items-center justify-center mx-auto mb-4 shadow-inner">
+              <div className="w-14 h-14 rounded-2xl bg-red-50 dark:bg-red-950/50 border border-red-200 dark:border-red-500/30 text-red-500 flex items-center justify-center mx-auto mb-4 shadow-inner">
                 <LogOut size={26} />
               </div>
-              <h3 className="text-lg font-black text-slate-900 tracking-tight">
+              <h3 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
                 Sign Out of Admin Portal?
               </h3>
-              <p className="text-xs text-slate-500 font-medium mt-1.5 mb-6 leading-relaxed">
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-1.5 mb-6 leading-relaxed">
                 Your administrative session will be securely terminated. You can log back in at any time.
               </p>
 
@@ -1385,7 +1428,7 @@ export default function AdminDashboard() {
                   type="button"
                   disabled={isLoggingOut}
                   onClick={() => setShowLogoutModal(false)}
-                  className="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 font-bold text-xs transition-colors"
+                  className="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 font-bold text-xs transition-colors"
                 >
                   Cancel
                 </button>

@@ -30,12 +30,12 @@ const CATEGORIES = [
   "General",
 ];
 const CATEGORY_COLORS = {
-  Development: "bg-blue-50 text-blue-600 border-blue-200",
-  Meeting: "bg-purple-50 text-purple-600 border-purple-200",
-  Infrastructure: "bg-amber-50 text-amber-700 border-amber-200",
-  Health: "bg-green-50 text-green-700 border-green-200",
-  Education: "bg-pink-50 text-pink-700 border-pink-200",
-  General: "bg-slate-100 text-slate-600 border-slate-200",
+  Development: "bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-300 border-blue-200 dark:border-blue-500/30",
+  Meeting: "bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-300 border-purple-200 dark:border-purple-500/30",
+  Infrastructure: "bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/30",
+  Health: "bg-green-50 dark:bg-green-950/40 text-green-700 dark:text-emerald-300 border-green-200 dark:border-emerald-500/30",
+  Education: "bg-pink-50 dark:bg-pink-950/40 text-pink-700 dark:text-pink-300 border-pink-200 dark:border-pink-500/30",
+  General: "bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 border-slate-200 dark:border-slate-700",
 };
 
 export default function ContentStudio() {
@@ -140,8 +140,8 @@ export default function ContentStudio() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-dark">Content Studio</h2>
-          <p className="text-slate-500 text-sm font-medium mt-1">
+          <h2 className="text-2xl font-bold text-dark dark:text-white">Content Studio</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm font-medium mt-1">
             Post ward announcements and updates for citizens
           </p>
         </div>
@@ -162,23 +162,23 @@ export default function ContentStudio() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -12, scale: 0.98 }}
             transition={{ duration: 0.25 }}
-            className="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-5"
+            className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-6 space-y-5"
           >
             <div className="flex items-center gap-2 text-primary font-bold mb-4">
               <Megaphone size={18} /> Compose New{" "}
               {postMode === "announcement" ? "Announcement" : "Social Activity"}
             </div>
 
-            <div className="flex bg-slate-100 p-1 rounded-xl mb-6">
+            <div className="flex bg-slate-100 dark:bg-slate-800 p-1 rounded-xl mb-6">
               <button
                 onClick={() => setPostMode("announcement")}
-                className={`flex-1 text-sm font-bold py-2 rounded-lg transition-colors ${postMode === "announcement" ? "bg-white shadow text-primary" : "text-slate-500 hover:text-dark"}`}
+                className={`flex-1 text-sm font-bold py-2 rounded-lg transition-colors ${postMode === "announcement" ? "bg-white dark:bg-slate-900 shadow text-primary" : "text-slate-500 dark:text-slate-400 hover:text-dark dark:hover:text-white"}`}
               >
                 Announcement
               </button>
               <button
                 onClick={() => setPostMode("activity")}
-                className={`flex-1 text-sm font-bold py-2 rounded-lg transition-colors ${postMode === "activity" ? "bg-white shadow text-primary" : "text-slate-500 hover:text-dark"}`}
+                className={`flex-1 text-sm font-bold py-2 rounded-lg transition-colors ${postMode === "activity" ? "bg-white dark:bg-slate-900 shadow text-primary" : "text-slate-500 dark:text-slate-400 hover:text-dark dark:hover:text-white"}`}
               >
                 Standalone Social Activity
               </button>
@@ -422,11 +422,11 @@ export default function ContentStudio() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.04 }}
-              className="bg-white rounded-2xl border border-slate-100 shadow-sm p-5 flex gap-4"
+              className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-100 dark:border-slate-800 shadow-sm p-5 flex gap-4"
             >
               {/* Avatar */}
               <div
-                className={`w-10 h-10 ${post._feedType === "activity" ? "bg-emerald-100 text-emerald-600" : "bg-primary/10 text-primary"} rounded-full flex items-center justify-center shrink-0`}
+                className={`w-10 h-10 ${post._feedType === "activity" ? "bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400" : "bg-primary/10 text-primary"} rounded-full flex items-center justify-center shrink-0`}
               >
                 {post._feedType === "activity" ? (
                   <ImageIcon size={18} />
@@ -438,7 +438,7 @@ export default function ContentStudio() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="font-bold text-dark text-sm">
+                    <span className="font-bold text-dark dark:text-white text-sm">
                       {post.author}
                     </span>
                     <span
@@ -447,7 +447,7 @@ export default function ContentStudio() {
                       {post.category}
                     </span>
                     {post._feedType === "activity" && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-600 border border-emerald-200 uppercase tracking-widest">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-500/30 uppercase tracking-widest">
                         Activity Gallery
                       </span>
                     )}
@@ -459,7 +459,7 @@ export default function ContentStudio() {
                     {post._feedType === "announcement" && (
                       <button
                         onClick={() => setConfirmDelete(post.id)}
-                        className="text-slate-300 hover:text-red-500 transition-colors"
+                        className="text-slate-300 dark:text-slate-600 hover:text-red-500 transition-colors"
                       >
                         <Trash2 size={15} />
                       </button>
@@ -467,16 +467,16 @@ export default function ContentStudio() {
                   </div>
                 </div>
                 {post._feedType === "activity" && post.title && (
-                  <h4 className="font-bold text-dark mb-1">{post.title}</h4>
+                  <h4 className="font-bold text-dark dark:text-white mb-1">{post.title}</h4>
                 )}
-                <p className="text-slate-600 text-sm leading-relaxed font-medium line-clamp-3">
+                <p className="text-slate-600 dark:text-slate-300 text-sm leading-relaxed font-medium line-clamp-3">
                   {post.content}
                 </p>
                 {post.img && (
                   <img
                     src={post.img}
                     alt=""
-                    className="mt-3 w-full max-h-40 object-cover rounded-xl border border-slate-100"
+                    className="mt-3 w-full max-h-40 object-cover rounded-xl border border-slate-100 dark:border-slate-800"
                     onError={(e) => {
                       e.target.style.display = "none";
                     }}
@@ -496,20 +496,20 @@ export default function ContentStudio() {
       {/* Delete confirm modal */}
       <AnimatePresence>
         {confirmDelete && (
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-sm text-center"
+              className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl p-8 w-full max-w-sm text-center border border-slate-200 dark:border-slate-800"
             >
-              <div className="w-14 h-14 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-4">
+              <div className="w-14 h-14 bg-red-50 dark:bg-red-950/40 rounded-full flex items-center justify-center mx-auto mb-4 border border-transparent dark:border-red-500/30">
                 <Trash2 size={24} className="text-red-500" />
               </div>
-              <h3 className="text-lg font-bold text-dark mb-2">
+              <h3 className="text-lg font-bold text-dark dark:text-white mb-2">
                 Delete Announcement?
               </h3>
-              <p className="text-slate-500 text-sm mb-6 font-medium">
+              <p className="text-slate-500 dark:text-slate-400 text-sm mb-6 font-medium">
                 This will permanently remove the post from the public page.
               </p>
               <div className="flex gap-3">

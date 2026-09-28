@@ -9,7 +9,7 @@ import CustomCursor from "../../components/CustomCursor";
 
 const MainLayout = () => {
   return (
-    <div className="min-h-screen flex flex-col font-inter">
+    <div className="min-h-screen flex flex-col font-inter bg-slate-50 dark:bg-[#090d16] text-slate-900 dark:text-slate-100 transition-colors duration-300">
       <CustomCursor />
       <ScrollToTop />
       {/* Fixed Navbar sits at top on its own */}

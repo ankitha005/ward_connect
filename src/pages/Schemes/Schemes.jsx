@@ -138,14 +138,14 @@ const Schemes = () => {
     filter === "All" ? schemes : schemes.filter((s) => s.category === filter);
 
   return (
-    <div className="py-12 bg-slate-50 min-h-screen">
+    <div className="py-12 bg-slate-50 dark:bg-[#090d16] text-slate-800 dark:text-slate-100 min-h-screen transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-dark mb-4">
+          <h1 className="text-4xl font-bold text-dark dark:text-white mb-4">
             Govt Scheme Explorer
           </h1>
-          <p className="text-slate-500 font-medium text-lg">
+          <p className="text-slate-500 dark:text-slate-400 font-medium text-lg">
             Detailed information, eligibility, and application steps for major
             government welfare schemes.
           </p>
@@ -160,7 +160,7 @@ const Schemes = () => {
               className={`flex items-center gap-2 px-6 py-3 rounded-full font-bold text-sm transition-all whitespace-nowrap ${
                 filter === cat.name
                   ? "bg-primary text-white shadow-lg shadow-primary/20 scale-105"
-                  : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-50"
+                  : "bg-white dark:bg-slate-850 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
               }`}
             >
               {cat.icon}
@@ -179,7 +179,7 @@ const Schemes = () => {
               transition={{ duration: 0.2 }}
               key={scheme.id}
               onClick={() => setSelectedScheme(scheme)}
-              className="bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-300 border border-slate-100 group flex flex-col cursor-pointer"
+              className="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden shadow-sm hover:shadow-2xl dark:hover:shadow-black/60 transition-all duration-300 border border-slate-100 dark:border-slate-800 group flex flex-col cursor-pointer"
             >
               <div className="h-56 overflow-hidden relative">
                 <img
@@ -188,25 +188,25 @@ const Schemes = () => {
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary shadow-sm">
+                <div className="absolute top-4 left-4 bg-white/90 dark:bg-slate-900/90 backdrop-blur px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-widest text-primary shadow-sm">
                   {scheme.category}
                 </div>
               </div>
               <div className="p-8 flex-grow flex flex-col">
-                <h3 className="text-xl font-extrabold text-dark mb-4 group-hover:text-primary transition-colors leading-tight">
+                <h3 className="text-xl font-extrabold text-dark dark:text-white mb-4 group-hover:text-primary transition-colors leading-tight">
                   {scheme.title}
                 </h3>
                 <div className="space-y-4 mb-8 flex-grow">
                   <div>
-                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1.5 line-clamp-1">
+                    <div className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-1.5 line-clamp-1">
                       Key Benefits
                     </div>
-                    <p className="text-sm text-slate-600 font-medium line-clamp-2">
+                    <p className="text-sm text-slate-600 dark:text-slate-300 font-medium line-clamp-2">
                       {scheme.benefits}
                     </p>
                   </div>
                 </div>
-                <button className="w-full btn-outline border-slate-200 text-primary hover:!bg-primary hover:!text-white hover:!border-primary flex items-center justify-center gap-2 group/btn font-bold">
+                <button className="w-full btn-outline border-slate-200 dark:border-slate-700 text-primary hover:!bg-primary hover:!text-white hover:!border-primary flex items-center justify-center gap-2 group/btn font-bold">
                   View Full Details{" "}
                   <ArrowRight
                     size={18}
@@ -231,7 +231,7 @@ const Schemes = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 50, scale: 0.95 }}
               onClick={(e) => e.stopPropagation()}
-              className="bg-white rounded-3xl overflow-hidden w-full max-w-4xl max-h-[90vh] shadow-2xl flex flex-col relative"
+              className="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden w-full max-w-4xl max-h-[90vh] shadow-2xl border border-transparent dark:border-slate-800 flex flex-col relative"
             >
               {/* Header Image */}
               <div className="h-48 md:h-64 relative shrink-0">
@@ -258,36 +258,36 @@ const Schemes = () => {
               </div>
 
               {/* Scrollable Content */}
-              <div className="p-6 md:p-10 flex-1 overflow-y-auto custom-scrollbar bg-slate-50">
+              <div className="p-6 md:p-10 flex-1 overflow-y-auto custom-scrollbar bg-slate-50 dark:bg-slate-950">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                   {/* Left Col (Main Text) */}
                   <div className="md:col-span-2 space-y-8">
                     <section>
-                      <h3 className="text-lg font-bold text-dark flex items-center gap-2 mb-3">
+                      <h3 className="text-lg font-bold text-dark dark:text-white flex items-center gap-2 mb-3">
                         <FileText size={20} className="text-primary" /> About
                         the Scheme
                       </h3>
-                      <p className="text-slate-600 leading-relaxed font-medium text-[15px]">
+                      <p className="text-slate-600 dark:text-slate-300 leading-relaxed font-medium text-[15px]">
                         {selectedScheme.details}
                       </p>
                     </section>
 
-                    <section className="bg-green-50/50 border border-green-100 rounded-2xl p-6">
-                      <h3 className="text-lg font-bold text-green-800 flex items-center gap-2 mb-3">
-                        <CheckCircle2 size={20} className="text-green-600" />{" "}
+                    <section className="bg-green-50/50 dark:bg-emerald-950/40 border border-green-100 dark:border-emerald-500/30 rounded-2xl p-6">
+                      <h3 className="text-lg font-bold text-green-800 dark:text-emerald-300 flex items-center gap-2 mb-3">
+                        <CheckCircle2 size={20} className="text-green-600 dark:text-emerald-400" />{" "}
                         Key Benefits
                       </h3>
-                      <p className="text-green-700 leading-relaxed font-medium">
+                      <p className="text-green-700 dark:text-emerald-200 leading-relaxed font-medium">
                         {selectedScheme.benefits}
                       </p>
                     </section>
 
-                    <section className="bg-amber-50/50 border border-amber-100 rounded-2xl p-6">
-                      <h3 className="text-lg font-bold text-amber-800 flex items-center gap-2 mb-3">
-                        <UserCircle size={20} className="text-amber-600" />{" "}
+                    <section className="bg-amber-50/50 dark:bg-amber-950/40 border border-amber-100 dark:border-amber-500/30 rounded-2xl p-6">
+                      <h3 className="text-lg font-bold text-amber-800 dark:text-amber-300 flex items-center gap-2 mb-3">
+                        <UserCircle size={20} className="text-amber-600 dark:text-amber-400" />{" "}
                         Eligibility Criteria
                       </h3>
-                      <p className="text-amber-700 leading-relaxed font-medium">
+                      <p className="text-amber-700 dark:text-amber-200 leading-relaxed font-medium">
                         {selectedScheme.eligibility}
                       </p>
                     </section>
@@ -295,15 +295,15 @@ const Schemes = () => {
 
                   {/* Right Col (Required Docs & Action) */}
                   <div className="space-y-6">
-                    <div className="bg-white border border-slate-100 shadow-sm rounded-2xl p-6">
-                      <h3 className="text-sm font-extrabold uppercase tracking-widest text-slate-400 mb-4">
+                    <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 shadow-sm rounded-2xl p-6">
+                      <h3 className="text-sm font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-4">
                         Required Documents
                       </h3>
                       <ul className="space-y-3">
                         {selectedScheme.documents.map((doc, idx) => (
                           <li
                             key={idx}
-                            className="flex items-start gap-2 text-sm font-semibold text-slate-700"
+                            className="flex items-start gap-2 text-sm font-semibold text-slate-700 dark:text-slate-300"
                           >
                             <div className="mt-1 w-1.5 h-1.5 bg-primary rounded-full shrink-0" />{" "}
                             {doc}

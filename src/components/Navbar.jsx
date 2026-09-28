@@ -3,9 +3,6 @@ import {
   Menu,
   X,
   Shield,
-  ShieldCheck,
-  LogOut,
-  Lock,
   ExternalLink,
   Sparkles,
   ChevronDown,
@@ -21,9 +18,7 @@ import logo from "../assets/logo.svg";
 import WeatherWidget from "./WeatherWidget";
 import { prefetchPath } from "../utils/routePrefetch";
 import { isMuted, toggleMute, toggleAmbient, isAmbientPlaying } from "../utils/soundEffects";
-import useComplaintsStore from "../store/complaintsStore";
 const Navbar = () => {
-  const { isAdminLoggedIn, adminLogout, adminUser } = useComplaintsStore();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hoveredLink, setHoveredLink] = useState(null);
@@ -121,13 +116,10 @@ const Navbar = () => {
 
       <nav
         ref={navRef}
-        className={`fixed top-1 left-0 right-0 z-50 transition-all duration-300 ease-out ${
-          isSolid
-            ? darkMode
-              ? "bg-slate-900/95 backdrop-blur-md shadow-[0_15px_40px_-5px_rgba(0,0,0,0.7)] border-b-2 border-red-600"
-              : "bg-white/95 backdrop-blur-md shadow-[0_15px_40px_-5px_rgba(220,38,38,0.15)] border-b-2 border-red-600"
+        className={`fixed top-1 left-0 right-0 z-50 transition-all duration-300 ease-out ${isSolid
+            ? "bg-white/95 backdrop-blur-md shadow-[0_15px_40px_-5px_rgba(220,38,38,0.15)] border-b-2 border-red-600"
             : "bg-gradient-to-b from-black/80 via-black/40 to-transparent"
-        }`}
+          }`}
         style={{
           WebkitBackdropFilter: isSolid ? "blur(12px)" : "none",
         }}
@@ -144,18 +136,16 @@ const Navbar = () => {
                 >
                   {/* Glow ring */}
                   <div
-                    className={`absolute -inset-2.5 rounded-[2rem] blur-md transition-all duration-300 ${
-                      isSolid
+                    className={`absolute -inset-2.5 rounded-[2rem] blur-md transition-all duration-300 ${isSolid
                         ? "bg-brand-orange/20 group-hover:bg-brand-orange/40"
                         : "bg-orange-500/30 group-hover:bg-orange-400/60"
-                    }`}
+                      }`}
                   />
                   <div
-                    className={`relative p-2 rounded-xl transition-all duration-200 transform group-hover:scale-105 ${
-                      isSolid
+                    className={`relative p-2 rounded-xl transition-all duration-200 transform group-hover:scale-105 ${isSolid
                         ? "bg-gradient-to-br from-orange-50 to-white ring-2 ring-brand-orange/30 shadow-lg"
                         : "bg-white/10 ring-1 ring-white/30"
-                    }`}
+                      }`}
                   >
                     <img
                       src={logo}
@@ -167,9 +157,8 @@ const Navbar = () => {
 
                 <div className="hidden sm:flex flex-col">
                   <motion.div
-                    className={`text-lg sm:text-xl font-black tracking-tight leading-tight transition-colors duration-300 uppercase ${
-                      isSolid ? "text-slate-900" : "text-white drop-shadow-md"
-                    }`}
+                    className={`text-lg sm:text-xl font-black tracking-tight leading-tight transition-colors duration-300 uppercase ${isSolid ? "text-slate-900" : "text-white drop-shadow-md"
+                      }`}
                     whileHover={{ letterSpacing: "0.04em" }}
                   >
                     ADDA{" "}
@@ -178,9 +167,8 @@ const Navbar = () => {
                     </span>
                   </motion.div>
                   <div
-                    className={`flex items-center gap-1.5 transition-colors duration-300 ${
-                      isSolid ? "text-slate-500" : "text-white/80"
-                    }`}
+                    className={`flex items-center gap-1.5 transition-colors duration-300 ${isSolid ? "text-slate-500" : "text-white/80"
+                      }`}
                   >
                     <Sparkles className="w-3 h-3 text-brand-orange shrink-0" />
                     <span className="text-[8.5px] xl:text-[9.5px] font-bold uppercase tracking-wider whitespace-nowrap">
@@ -194,11 +182,10 @@ const Navbar = () => {
             {/* Desktop Navigation */}
             <div className="hidden lg:flex items-center shrink-0">
               <div
-                className={`flex items-center gap-0.5 xl:gap-1 p-1 xl:p-1.5 rounded-[1.5rem] transition-all duration-200 shadow-inner ${
-                  isSolid
+                className={`flex items-center gap-0.5 xl:gap-1 p-1 xl:p-1.5 rounded-[1.5rem] transition-all duration-200 shadow-inner ${isSolid
                     ? "bg-slate-100/80 ring-2 ring-orange-100"
                     : "bg-black/20 ring-1 ring-white/20"
-                }`}
+                  }`}
               >
                 {navLinks
                   .filter((l) =>
@@ -220,16 +207,14 @@ const Navbar = () => {
                       onTouchStart={() => prefetchPath(link.path)}
                       onMouseLeave={() => setHoveredLink(null)}
                       className={({ isActive }) =>
-                        `relative px-2.5 xl:px-3 py-1.5 xl:py-2 text-[12px] xl:text-[13px] font-bold rounded-full transition-all duration-300 uppercase tracking-wide shrink-0 ${
-                          link.name === "Announcements" ? "hidden xl:inline-block" : ""
-                        } ${
-                          isActive
+                        `relative px-2.5 xl:px-3 py-1.5 xl:py-2 text-[12px] xl:text-[13px] font-bold rounded-full transition-all duration-300 uppercase tracking-wide shrink-0 ${link.name === "Announcements" ? "hidden xl:inline-block" : ""
+                        } ${isActive
+                          ? isSolid
                             ? "text-brand-orange"
-                            : isSolid
-                              ? darkMode
-                                ? "text-slate-200 hover:text-white"
-                                : "text-slate-600 hover:text-slate-900"
-                              : "text-white/80 hover:text-white"
+                            : "text-white"
+                          : isSolid
+                            ? "text-slate-600 hover:text-slate-900"
+                            : "text-white/80 hover:text-white"
                         }`
                       }
                     >
@@ -238,13 +223,7 @@ const Navbar = () => {
                           {isActive && (
                             <motion.div
                               layoutId="nav-active-pill"
-                              className={`absolute inset-0 rounded-xl ${
-                                isSolid
-                                  ? darkMode
-                                    ? "bg-slate-800 shadow-sm ring-1 ring-brand-orange/40"
-                                    : "bg-white shadow-sm ring-1 ring-brand-orange/20"
-                                  : "bg-brand-orange/40 border border-brand-orange"
-                              }`}
+                              className={`absolute inset-0 rounded-xl ${isSolid ? "bg-white shadow-sm ring-1 ring-brand-orange/20" : "bg-brand-orange/40 border border-brand-orange"}`}
                               transition={{
                                 type: "spring",
                                 stiffness: 400,
@@ -255,13 +234,7 @@ const Navbar = () => {
                           {hoveredLink === link.name && !isActive && (
                             <motion.div
                               layoutId="nav-hover-glow"
-                              className={`absolute inset-0 rounded-xl ${
-                                isSolid
-                                  ? darkMode
-                                    ? "bg-white/10"
-                                    : "bg-brand-orange/10"
-                                  : "bg-white/15"
-                              }`}
+                              className={`absolute inset-0 rounded-xl ${isSolid ? "bg-brand-orange/10" : "bg-white/15"}`}
                               animate={{ opacity: 1 }}
                               exit={{ opacity: 0 }}
                             />
@@ -285,13 +258,7 @@ const Navbar = () => {
                 {/* 'More' Dropdown */}
                 <div className="relative group px-1">
                   <button
-                    className={`relative px-2.5 xl:px-3 py-1.5 xl:py-2 text-[12px] xl:text-[13px] font-bold rounded-full transition-all duration-300 uppercase tracking-wide flex items-center gap-1 focus:outline-none ${
-                      isSolid
-                        ? darkMode
-                          ? "text-slate-200 hover:text-white"
-                          : "text-slate-600 hover:text-slate-900"
-                        : "text-white/80 hover:text-white"
-                    }`}
+                    className={`relative px-2.5 xl:px-3 py-1.5 xl:py-2 text-[12px] xl:text-[13px] font-bold rounded-full transition-all duration-300 uppercase tracking-wide flex items-center gap-1 focus:outline-none ${isSolid ? "text-slate-600 hover:text-slate-900" : "text-white/80 hover:text-white"}`}
                   >
                     More{" "}
                     <ChevronDown
@@ -299,17 +266,16 @@ const Navbar = () => {
                       className="group-hover:rotate-180 transition-transform duration-300"
                     />
                   </button>
-                  <div className="absolute top-10 right-0 w-52 opacity-0 translate-y-3 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-200 bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-black/20 border border-slate-100 dark:border-slate-800 p-2 flex flex-col z-[60] group-hover:pointer-events-auto pointer-events-none">
+                  <div className="absolute top-10 right-0 w-48 opacity-0 translate-y-3 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-200 bg-white rounded-2xl shadow-xl shadow-black/10 border border-slate-100 p-2 flex flex-col z-[60] group-hover:pointer-events-auto pointer-events-none">
                     {/* Announcements in dropdown when on lg laptop screens */}
                     <NavLink
                       to="/announcements"
                       onMouseEnter={() => prefetchPath("/announcements")}
                       onTouchStart={() => prefetchPath("/announcements")}
                       className={({ isActive }) =>
-                        `xl:hidden flex items-center gap-3 px-4 py-2.5 text-[13px] font-bold rounded-xl transition-all duration-200 uppercase tracking-wide ${
-                          isActive
-                            ? "text-brand-orange bg-orange-50"
-                            : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                        `xl:hidden flex items-center gap-3 px-4 py-2.5 text-[13px] font-bold rounded-xl transition-all duration-200 uppercase tracking-wide ${isActive
+                          ? "text-brand-orange bg-orange-50"
+                          : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                         }`
                       }
                     >
@@ -332,42 +298,15 @@ const Navbar = () => {
                           onMouseEnter={() => prefetchPath(link.path)}
                           onTouchStart={() => prefetchPath(link.path)}
                           className={({ isActive }) =>
-                            `flex items-center gap-3 px-4 py-2.5 text-[13px] font-bold rounded-xl transition-all duration-200 uppercase tracking-wide ${
-                              isActive
-                                ? "text-brand-orange bg-orange-50"
-                                : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                            `flex items-center gap-3 px-4 py-2.5 text-[13px] font-bold rounded-xl transition-all duration-200 uppercase tracking-wide ${isActive
+                              ? "text-brand-orange bg-orange-50"
+                              : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
                             }`
                           }
                         >
                           {link.name}
                         </NavLink>
                       ))}
-
-                    {/* Admin Access inside More dropdown */}
-                    <div className="border-t border-slate-100 my-1" />
-                    {isAdminLoggedIn ? (
-                      <>
-                        <NavLink
-                          to="/admin/dashboard"
-                          className="flex items-center gap-2.5 px-4 py-2 text-[12px] font-bold text-amber-600 hover:bg-amber-50 rounded-xl transition-colors"
-                        >
-                          <ShieldCheck size={14} className="text-amber-500" /> Admin Dashboard
-                        </NavLink>
-                        <button
-                          onClick={() => adminLogout()}
-                          className="w-full text-left flex items-center gap-2.5 px-4 py-2 text-[12px] font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
-                        >
-                          <LogOut size={14} /> Sign Out
-                        </button>
-                      </>
-                    ) : (
-                      <NavLink
-                        to="/admin/login"
-                        className="flex items-center gap-2.5 px-4 py-2 text-[12px] font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-colors"
-                      >
-                        <Lock size={14} /> Admin Portal
-                      </NavLink>
-                    )}
                   </div>
                 </div>
               </div>
@@ -377,63 +316,22 @@ const Navbar = () => {
             <div className="shrink-0 flex items-center gap-1.5 sm:gap-2 justify-end">
               <WeatherWidget />
 
-              {/* Admin status pill on desktop */}
-              {isAdminLoggedIn ? (
-                <div className="hidden lg:flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 rounded-full px-2.5 py-1">
-                  <Link
-                    to="/admin/dashboard"
-                    className="flex items-center gap-1 text-[11px] font-extrabold text-amber-600 hover:text-amber-700"
-                    title="Open Ward Admin Dashboard"
-                  >
-                    <ShieldCheck size={13} className="text-amber-500 animate-pulse" />
-                    <span>Admin</span>
-                  </Link>
-                  <button
-                    onClick={() => adminLogout()}
-                    title="Sign Out Admin"
-                    className="p-1 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
-                  >
-                    <LogOut size={12} />
-                  </button>
-                </div>
-              ) : (
-                <Link
-                  to="/admin/login"
-                  className={`hidden lg:flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full transition-all ${
-                    isSolid
-                      ? "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
-                      : "text-white/70 hover:text-white hover:bg-white/10"
-                  }`}
-                  title="Staff & Ward Admin Portal"
-                >
-                  <Lock size={12} />
-                  <span>Admin</span>
-                </Link>
-              )}
-
               {/* Integrated Micro-toolbar capsule (Dark mode, Sound, Music) */}
               <div
-                className={`hidden md:flex items-center p-1 rounded-full border transition-all duration-200 shadow-sm ${
-                  isSolid
+                className={`hidden md:flex items-center p-1 rounded-full border transition-all duration-200 shadow-sm ${isSolid
                     ? "bg-slate-100/90 border-slate-200/90"
                     : "bg-white/10 border-white/20 backdrop-blur-md"
-                }`}
+                  }`}
               >
                 {/* Dark Mode Toggle */}
                 <motion.button
-                  onClick={() => {
-                    playPop();
-                    setDarkMode((d) => !d);
-                  }}
+                  onClick={() => setDarkMode((d) => !d)}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all ${
-                    isSolid
-                      ? darkMode
-                        ? "text-amber-400 hover:bg-slate-800"
-                        : "text-slate-600 hover:text-slate-900 hover:bg-white shadow-xs"
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all ${isSolid
+                      ? "text-slate-600 hover:text-slate-900 hover:bg-white shadow-xs"
                       : "text-white/80 hover:text-white hover:bg-white/20"
-                  }`}
+                    }`}
                   title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
                 >
                   <AnimatePresence mode="wait">
@@ -463,9 +361,8 @@ const Navbar = () => {
 
                 {/* Divider */}
                 <div
-                  className={`w-[1px] h-4 mx-0.5 ${
-                    isSolid ? "bg-slate-300" : "bg-white/20"
-                  }`}
+                  className={`w-[1px] h-4 mx-0.5 ${isSolid ? "bg-slate-300" : "bg-white/20"
+                    }`}
                 />
 
                 {/* Sound Effects Toggle */}
@@ -473,11 +370,10 @@ const Navbar = () => {
                   onClick={toggleMute}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all ${
-                    isSolid
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all ${isSolid
                       ? "text-slate-600 hover:text-slate-900 hover:bg-white shadow-xs"
                       : "text-white/80 hover:text-white hover:bg-white/20"
-                  }`}
+                    }`}
                   title={soundMuted ? "Unmute Sound Effects" : "Mute Sound Effects"}
                 >
                   {soundMuted ? (
@@ -492,9 +388,8 @@ const Navbar = () => {
 
                 {/* Divider */}
                 <div
-                  className={`w-[1px] h-4 mx-0.5 ${
-                    isSolid ? "bg-slate-300" : "bg-white/20"
-                  }`}
+                  className={`w-[1px] h-4 mx-0.5 ${isSolid ? "bg-slate-300" : "bg-white/20"
+                    }`}
                 />
 
                 {/* Ambient Background Music Toggle */}
@@ -502,13 +397,12 @@ const Navbar = () => {
                   onClick={toggleAmbient}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
-                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all ${
-                    ambientPlaying
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all ${ambientPlaying
                       ? "bg-gradient-to-tr from-brand-orange to-amber-500 text-white shadow-[0_0_10px_rgba(255,153,51,0.6)] animate-pulse"
                       : isSolid
                         ? "text-slate-600 hover:text-slate-900 hover:bg-white shadow-xs"
                         : "text-white/80 hover:text-white hover:bg-white/20"
-                  }`}
+                    }`}
                   title={
                     ambientPlaying ? "Pause Ambient Music" : "Play Civic Ambient Music"
                   }
@@ -550,11 +444,10 @@ const Navbar = () => {
               {/* Mobile Toggle Button */}
               <motion.button
                 onClick={() => setIsOpen(!isOpen)}
-                className={`lg:hidden relative p-3 rounded-2xl transition-all duration-300 shadow-md ${
-                  isSolid
+                className={`lg:hidden relative p-3 rounded-2xl transition-all duration-300 shadow-md ${isSolid
                     ? "text-slate-900 bg-white hover:bg-orange-50 ring-1 ring-orange-200"
                     : "text-white bg-black/20 hover:bg-white/20 ring-1 ring-white/30"
-                }`}
+                  }`}
                 whileTap={{ scale: 0.9 }}
               >
                 <AnimatePresence mode="wait">
@@ -625,10 +518,9 @@ const Navbar = () => {
                         onMouseEnter={() => prefetchPath(link.path)}
                         onTouchStart={() => prefetchPath(link.path)}
                         className={({ isActive }) =>
-                          `flex items-center gap-3 px-4 py-2.5 text-[15px] font-semibold rounded-xl transition-all duration-200 ${
-                            isActive
-                              ? "text-primary bg-gradient-to-r from-primary/10 to-orange-50 ring-1 ring-primary/15 shadow-sm"
-                              : "text-slate-600 hover:text-dark hover:bg-slate-50"
+                          `flex items-center gap-3 px-4 py-2.5 text-[15px] font-semibold rounded-xl transition-all duration-200 ${isActive
+                            ? "text-primary bg-gradient-to-r from-primary/10 to-orange-50 ring-1 ring-primary/15 shadow-sm"
+                            : "text-slate-600 hover:text-dark hover:bg-slate-50"
                           }`
                         }
                       >
@@ -664,11 +556,8 @@ const Navbar = () => {
                     Interface Mode
                   </span>
                   <button
-                    onClick={() => {
-                      playPop();
-                      setDarkMode((d) => !d);
-                    }}
-                    className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold px-4 py-2 rounded-xl transition-all border border-slate-200 dark:border-slate-700"
+                    onClick={() => setDarkMode((d) => !d)}
+                    className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold px-4 py-2 rounded-xl transition-all border border-slate-200"
                   >
                     {darkMode ? (
                       <>
@@ -728,11 +617,10 @@ const Navbar = () => {
                   </span>
                   <button
                     onClick={toggleAmbient}
-                    className={`flex items-center gap-2 font-bold px-4 py-2 rounded-xl transition-all border ${
-                      ambientPlaying
+                    className={`flex items-center gap-2 font-bold px-4 py-2 rounded-xl transition-all border ${ambientPlaying
                         ? "bg-brand-orange text-white border-brand-orange shadow-md shadow-brand-orange/30"
                         : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200"
-                    }`}
+                      }`}
                   >
                     <Music size={16} />
                     <span>{ambientPlaying ? "Playing" : "Play"}</span>
@@ -748,39 +636,15 @@ const Navbar = () => {
                   animate="visible"
                   exit="exit"
                 >
-                  {isAdminLoggedIn ? (
-                    <div className="space-y-2">
-                      <Link
-                        to="/admin/dashboard"
-                        onClick={() => setIsOpen(false)}
-                        className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-extrabold py-3 px-6 rounded-xl shadow-md shadow-amber-500/20 active:scale-[0.98] transition-transform text-sm"
-                      >
-                        <ShieldCheck className="w-4 h-4" />
-                        Admin Dashboard ({adminUser || "admin"})
-                      </Link>
-                      <button
-                        onClick={() => {
-                          adminLogout();
-                          setIsOpen(false);
-                        }}
-                        className="flex items-center justify-center gap-2 w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2.5 px-6 rounded-xl border border-red-200 transition-colors text-xs cursor-pointer"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        Sign Out of Admin Portal
-                      </button>
-                    </div>
-                  ) : (
-                    <Link
-                      to="/admin/login"
-                      onClick={() => setIsOpen(false)}
-                      onMouseEnter={() => prefetchPath("/admin/login")}
-                      onTouchStart={() => prefetchPath("/admin/login")}
-                      className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-primary via-orange-500 to-amber-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-primary/25 active:scale-[0.98] transition-transform text-sm"
-                    >
-                      <Shield className="w-4 h-4" />
-                      Admin Login
-                    </Link>
-                  )}
+                  <Link
+                    to="/admin/login"
+                    onMouseEnter={() => prefetchPath("/admin/login")}
+                    onTouchStart={() => prefetchPath("/admin/login")}
+                    className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-primary via-orange-500 to-amber-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-primary/25 active:scale-[0.98] transition-transform"
+                  >
+                    <Shield className="w-4 h-4" />
+                    Admin Login
+                  </Link>
                 </motion.div>
               </motion.div>
             </>

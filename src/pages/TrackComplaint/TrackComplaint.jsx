@@ -28,22 +28,22 @@ const WARD_LABELS = Object.fromEntries(
 
 const STATUS_CONFIG = {
   Pending: {
-    color: "bg-amber-100 text-amber-700 border-amber-200",
+    color: "bg-amber-100 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-500/40",
     dot: "bg-amber-500",
     icon: <Clock size={16} />,
   },
   "In Progress": {
-    color: "bg-blue-100 text-blue-700 border-blue-200",
+    color: "bg-blue-100 dark:bg-blue-950/50 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-500/40",
     dot: "bg-blue-500",
     icon: <AlertCircle size={16} />,
   },
   Resolved: {
-    color: "bg-green-100 text-green-700 border-green-200",
+    color: "bg-green-100 dark:bg-emerald-950/50 text-green-700 dark:text-emerald-300 border-green-200 dark:border-emerald-500/40",
     dot: "bg-green-500",
     icon: <CheckCircle2 size={16} />,
   },
   Rejected: {
-    color: "bg-red-100 text-red-600 border-red-200",
+    color: "bg-red-100 dark:bg-red-950/50 text-red-600 dark:text-red-300 border-red-200 dark:border-red-500/40",
     dot: "bg-red-500",
     icon: <XCircle size={16} />,
   },
@@ -82,7 +82,7 @@ export default function TrackComplaint() {
   const display = result ?? [];
 
   return (
-    <div className="min-h-[calc(100vh-80px)] bg-slate-50 py-16 relative overflow-hidden">
+    <div className="min-h-[calc(100vh-80px)] bg-slate-50 dark:bg-[#090d16] text-slate-800 dark:text-slate-100 py-16 relative overflow-hidden transition-colors duration-300">
       {/* Decorative Orbs */}
       <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-brand-orange/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[600px] h-[600px] bg-brand-green/5 rounded-full blur-[120px] pointer-events-none" />
@@ -90,13 +90,13 @@ export default function TrackComplaint() {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative z-10">
         {/* Header */}
         <div className="text-center mb-12">
-          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-200/50 border border-slate-300 text-slate-700 font-black text-xs uppercase tracking-widest mb-4">
+          <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-slate-200/50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-black text-xs uppercase tracking-widest mb-4">
             <Search size={14} /> Live Status Tracker
           </span>
-          <h1 className="text-4xl md:text-5xl font-black text-slate-900 uppercase tracking-tight mb-4">
+          <h1 className="text-4xl md:text-5xl font-black text-slate-900 dark:text-white uppercase tracking-tight mb-4">
             Track Your <span className="text-gradient-brand">Complaint</span>
           </h1>
-          <p className="text-slate-600 font-medium max-w-xl mx-auto">
+          <p className="text-slate-600 dark:text-slate-400 font-medium max-w-xl mx-auto">
             Stay updated on the progress of your grievance. Enter your Complaint
             Reference ID or Voter details below.
           </p>
@@ -106,10 +106,10 @@ export default function TrackComplaint() {
         <motion.div
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          className="bg-white rounded-[2rem] p-6 md:p-8 shadow-xl shadow-slate-200/50 border border-slate-100 mb-10"
+          className="bg-white dark:bg-slate-900 rounded-[2rem] p-6 md:p-8 shadow-xl dark:shadow-2xl border border-slate-100 dark:border-slate-800 mb-10"
         >
           {/* Toggle */}
-          <div className="flex bg-slate-50 p-1.5 rounded-2xl mb-8 w-fit mx-auto border border-slate-100">
+          <div className="flex bg-slate-50 dark:bg-slate-800/80 p-1.5 rounded-2xl mb-8 w-fit mx-auto border border-slate-100 dark:border-slate-700">
             {["id", "voter"].map((m) => (
               <button
                 key={m}
@@ -120,8 +120,8 @@ export default function TrackComplaint() {
                 }}
                 className={`px-8 py-3 rounded-xl text-sm font-bold uppercase tracking-wider transition-all duration-300 ${
                   mode === m
-                    ? "bg-white shadow-md text-brand-orange"
-                    : "text-slate-400 hover:text-slate-600"
+                    ? "bg-white dark:bg-slate-900 shadow-md text-brand-orange"
+                    : "text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                 }`}
               >
                 {m === "id" ? "Complaint ID" : "Voter Details"}
@@ -140,13 +140,13 @@ export default function TrackComplaint() {
                   value={search}
                   onChange={(e) => setSearch(e.target.value.toUpperCase())}
                   onKeyDown={(e) => e.key === "Enter" && handleSearch()}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl pl-14 pr-6 py-4 focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all font-mono font-bold text-slate-700 tracking-wider text-lg"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl pl-14 pr-6 py-4 focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all font-mono font-bold text-slate-800 dark:text-slate-100 tracking-wider text-lg"
                   placeholder="e.g. BRC-2026-ABC..."
                 />
               </div>
               <button
                 onClick={handleSearch}
-                className="bg-gradient-to-r from-slate-900 to-slate-800 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg hover:shadow-slate-300 transition-all active:scale-95"
+                className="bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-700 hover:to-amber-600 text-white px-10 py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-red-500/25 transition-all active:scale-95"
               >
                 Track
               </button>
@@ -154,24 +154,24 @@ export default function TrackComplaint() {
           ) : (
             <div className="space-y-5 max-w-md mx-auto">
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
                   <Fingerprint size={14} /> Voter ID Number
                 </label>
                 <input
                   value={voterId}
                   onChange={(e) => setVoterId(e.target.value.toUpperCase())}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all font-mono font-bold text-slate-700 tracking-wider"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all font-mono font-bold text-slate-800 dark:text-slate-100 tracking-wider"
                   placeholder="e.g. ABC1234567"
                 />
               </div>
               <div>
-                <label className="block text-xs font-bold text-slate-500 uppercase tracking-widest mb-2 flex items-center gap-2">
+                <label className="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
                   <MapPin size={14} /> Select Ward
                 </label>
                 <select
                   value={ward}
                   onChange={(e) => setWard(e.target.value)}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all font-bold text-slate-700"
+                  className="w-full bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 focus:outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all font-bold text-slate-800 dark:text-slate-100"
                 >
                   <option value="">-- Choose Ward --</option>
                   {BANGALORE_WARDS_DATA.map((w) => (
@@ -184,7 +184,7 @@ export default function TrackComplaint() {
               <button
                 onClick={handleSearch}
                 disabled={!voterId || !ward}
-                className="w-full bg-gradient-to-r from-slate-900 to-slate-800 text-white py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg hover:shadow-slate-300 transition-all active:scale-[0.98] disabled:opacity-50 mt-2"
+                className="w-full bg-gradient-to-r from-red-600 to-amber-500 hover:from-red-700 hover:to-amber-600 text-white py-4 rounded-2xl font-black uppercase tracking-widest shadow-lg shadow-red-500/25 transition-all active:scale-[0.98] disabled:opacity-50 mt-2"
               >
                 Find Complaints
               </button>
@@ -199,7 +199,7 @@ export default function TrackComplaint() {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="bg-red-50 border border-red-100 rounded-2xl p-6 text-center text-red-600 font-bold flex items-center justify-center gap-2 max-w-2xl mx-auto shadow-sm"
+              className="bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-500/30 rounded-2xl p-6 text-center text-red-600 dark:text-red-300 font-bold flex items-center justify-center gap-2 max-w-2xl mx-auto shadow-sm"
             >
               <ShieldAlert size={20} /> We couldn't find any complaints matching
               those details.
@@ -219,7 +219,7 @@ export default function TrackComplaint() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
-                className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden hover:shadow-xl transition-all duration-300"
+                className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden hover:shadow-xl dark:hover:shadow-black/50 transition-all duration-300"
               >
                 {/* Header (Always Visible) */}
                 <div
@@ -228,10 +228,10 @@ export default function TrackComplaint() {
                 >
                   <div className="flex-1">
                     <div className="flex items-center gap-3 mb-2">
-                      <div className="px-3 py-1 bg-slate-100 text-slate-500 rounded-lg text-[10px] font-black uppercase tracking-widest">
+                      <div className="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-300 rounded-lg text-[10px] font-black uppercase tracking-widest">
                         {c.category}
                       </div>
-                      <div className="text-xs font-bold text-slate-400">
+                      <div className="text-xs font-bold text-slate-400 dark:text-slate-500">
                         {new Date(c.createdAt).toLocaleDateString("en-IN", {
                           day: "numeric",
                           month: "short",
@@ -239,10 +239,10 @@ export default function TrackComplaint() {
                         })}
                       </div>
                     </div>
-                    <div className="font-mono font-black text-slate-800 text-2xl tracking-tight">
+                    <div className="font-mono font-black text-slate-800 dark:text-white text-2xl tracking-tight">
                       {c.id}
                     </div>
-                    <div className="text-sm font-semibold text-slate-500 mt-1 flex items-center gap-1.5">
+                    <div className="text-sm font-semibold text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
                       <MapPin size={14} /> {WARD_LABELS[c.ward]}
                     </div>
                   </div>
@@ -254,7 +254,7 @@ export default function TrackComplaint() {
                       {statusCfg.icon} {c.status}
                     </span>
                     <div
-                      className={`p-2 rounded-full border transition-all ${isOpen ? "bg-slate-900 border-slate-900 text-white" : "bg-white border-slate-200 text-slate-400 group-hover:border-slate-300"}`}
+                      className={`p-2 rounded-full border transition-all ${isOpen ? "bg-slate-900 dark:bg-slate-700 border-slate-900 dark:border-slate-700 text-white" : "bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-400 group-hover:border-slate-300"}`}
                     >
                       <ChevronDown
                         size={20}
@@ -273,32 +273,32 @@ export default function TrackComplaint() {
                       exit={{ height: 0, opacity: 0 }}
                       className="overflow-hidden"
                     >
-                      <div className="border-t border-slate-100 bg-slate-50/50 p-6 md:p-8">
+                      <div className="border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-950/40 p-6 md:p-8">
                         {/* Info Grid */}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
-                          <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                          <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">
                               Priority Level
                             </span>
                             <span
-                              className={`font-black uppercase ${c.priority === "Urgent" ? "text-red-500" : c.priority === "High" ? "text-orange-500" : "text-slate-700"}`}
+                              className={`font-black uppercase ${c.priority === "Urgent" ? "text-red-500" : c.priority === "High" ? "text-orange-500" : "text-slate-700 dark:text-slate-200"}`}
                             >
                               {c.priority}
                             </span>
                           </div>
-                          <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                          <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">
                               Specific Area
                             </span>
-                            <span className="font-bold text-slate-700 line-clamp-1">
+                            <span className="font-bold text-slate-700 dark:text-slate-200 line-clamp-1">
                               {c.area || "Not Specified"}
                             </span>
                           </div>
-                          <div className="bg-white p-4 rounded-2xl border border-slate-100 shadow-sm">
+                          <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm">
                             <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-1">
                               Contact Mobile
                             </span>
-                            <span className="font-bold text-slate-700 flex items-center gap-1.5">
+                            <span className="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-1.5">
                               <Phone size={14} className="text-green-600" /> +91{" "}
                               {c.mobile}
                             </span>
@@ -306,11 +306,11 @@ export default function TrackComplaint() {
                         </div>
 
                         {/* Description */}
-                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm mb-8">
+                        <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-100 dark:border-slate-700 shadow-sm mb-8">
                           <span className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
                             <FileText size={14} /> Complaint Description
                           </span>
-                          <p className="text-slate-700 font-medium leading-relaxed">
+                          <p className="text-slate-700 dark:text-slate-200 font-medium leading-relaxed">
                             {c.description}
                           </p>
                           {c.photoData && (
@@ -321,7 +321,7 @@ export default function TrackComplaint() {
                               <img
                                 src={c.photoData}
                                 alt="Complaint"
-                                className="h-32 w-auto object-cover rounded-xl shadow-sm border border-slate-200"
+                                className="h-32 w-auto object-cover rounded-xl shadow-sm border border-slate-200 dark:border-slate-700"
                               />
                             </div>
                           )}
