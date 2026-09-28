@@ -91,8 +91,13 @@ const useComplaintsStore = create(
       surveys: [],
 
       // ── Admin auth ──
-      isAdminLoggedIn: false,
-      adminToken: null,
+      isAdminLoggedIn: Boolean(
+        typeof window !== "undefined" && localStorage.getItem("adminToken"),
+      ),
+      adminToken:
+        typeof window !== "undefined"
+          ? localStorage.getItem("adminToken")
+          : null,
       adminLogin: async (username, password) => {
         try {
           const res = await fetch(`${API_BASE}/api/admin/login`, {
@@ -122,8 +127,23 @@ const useComplaintsStore = create(
         return false;
       },
       adminLogout: () => {
-        set({ isAdminLoggedIn: false, adminToken: null });
         localStorage.removeItem("adminToken");
+        sessionStorage.removeItem("adminToken");
+        set({ isAdminLoggedIn: false, adminToken: null });
+        try {
+          const raw = localStorage.getItem("adda_360-complaints-v2");
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.state) {
+              parsed.state.isAdminLoggedIn = false;
+              parsed.state.adminToken = null;
+              localStorage.setItem(
+                "adda_360-complaints-v2",
+                JSON.stringify(parsed),
+              );
+            }
+          }
+        } catch {}
       },
 
       fetchComplaints: async () => {
@@ -481,8 +501,11 @@ const useComplaintsStore = create(
     }),
     {
       name: "adda_360-complaints-v2",
-      // We removed the custom persist storage to let Zustand use default localStorage
-      // for other stuff, but our complaints are now fetched from MongoDB!
+      partialize: (state) => {
+        // Exclude admin auth so it never gets stuck in localStorage!
+        const { isAdminLoggedIn, adminToken, ...rest } = state;
+        return rest;
+      },
     },
   ),
 );

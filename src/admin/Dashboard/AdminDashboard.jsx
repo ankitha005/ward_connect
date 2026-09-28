@@ -82,11 +82,15 @@ function HeatMap({ complaints }) {
   };
 
   useEffect(() => {
-    if (mapInstanceRef.current) return; // already initialised
+    if (!mapRef.current) return;
+    if (mapInstanceRef.current) {
+      mapInstanceRef.current.remove();
+      mapInstanceRef.current = null;
+    }
 
     mapInstanceRef.current = L.map(mapRef.current, {
-      center: [17.39, 78.49],
-      zoom: 14,
+      center: [12.9716, 77.5946],
+      zoom: 12,
       zoomControl: true,
       scrollWheelZoom: false,
     });
@@ -94,6 +98,13 @@ function HeatMap({ complaints }) {
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       attribution: "© OpenStreetMap contributors",
     }).addTo(mapInstanceRef.current);
+
+    return () => {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
   }, []);
 
   useEffect(() => {
@@ -106,8 +117,8 @@ function HeatMap({ complaints }) {
 
     // build points: use GPS if available, else ward center
     const points = complaints.map((c) => {
-      const lat = c.lat ?? WARD_CENTERS[c.ward]?.[0] ?? 17.39;
-      const lng = c.lng ?? WARD_CENTERS[c.ward]?.[1] ?? 78.49;
+      const lat = c.lat ?? WARD_CENTERS[c.ward]?.[0] ?? 12.9716;
+      const lng = c.lng ?? WARD_CENTERS[c.ward]?.[1] ?? 77.5946;
       const intensity =
         c.priority === "Urgent" ? 1.0 : c.priority === "High" ? 0.7 : 0.4;
       return [lat, lng, intensity];
@@ -209,16 +220,17 @@ function ComplaintDrawer({ complaint, onClose, onStatusUpdate }) {
 
   const handleSave = async () => {
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 400));
-    onStatusUpdate(complaint.id, newStatus, note, afterImage);
-    setSaving(false);
-    setNote("");
-    setAfterImage(null);
+    try {
+      await onStatusUpdate(complaint.id, newStatus, note, afterImage);
+      setNote("");
+      setAfterImage(null);
+    } finally {
+      setSaving(false);
+    }
   };
 
   const handleAiNote = async () => {
     setGeneratingAi(true);
-    await new Promise((r) => setTimeout(r, 600));
     let autoNote = "";
     if (newStatus === "Resolved") {
       autoNote = `Inspection completed by Municipal Engineering team. Issue regarding ${complaint.category.toLowerCase()} at ${complaint.address} has been successfully resolved according to BBMP civic standards.`;
@@ -663,6 +675,10 @@ export default function AdminDashboard() {
     adminLogout,
     volunteers,
     surveys,
+    fetchComplaints,
+    fetchSurveys,
+    fetchVolunteers,
+    fetchAnnouncements,
   } = useComplaintsStore();
   const navigate = useNavigate();
 
@@ -673,10 +689,37 @@ export default function AdminDashboard() {
   const [dateStart, setDateStart] = useState("");
   const [dateEnd, setDateEnd] = useState("");
   const [selected, setSelected] = useState(null);
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
-  if (!isAdminLoggedIn) {
-    navigate("/admin/login");
-    return null;
+  // Safe session check: if not logged in or no valid token, redirect to login
+  useEffect(() => {
+    const hasToken = localStorage.getItem("adminToken");
+    if (!isAdminLoggedIn || !hasToken) {
+      navigate("/admin/login", { replace: true });
+    } else {
+      setCheckingAuth(false);
+    }
+  }, [isAdminLoggedIn, navigate]);
+
+  // Immediately refresh live complaints and records on mount
+  useEffect(() => {
+    if (fetchComplaints) fetchComplaints();
+    if (fetchSurveys) fetchSurveys();
+    if (fetchVolunteers) fetchVolunteers();
+    if (fetchAnnouncements) fetchAnnouncements();
+  }, [fetchComplaints, fetchSurveys, fetchVolunteers, fetchAnnouncements]);
+
+  if (checkingAuth) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-10 h-10 border-3 border-primary border-t-transparent rounded-full animate-spin" />
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">
+            Opening Admin Workspace...
+          </span>
+        </div>
+      </div>
+    );
   }
 
   const total = complaints.length;
@@ -788,9 +831,9 @@ export default function AdminDashboard() {
         <button
           onClick={() => {
             adminLogout();
-            navigate("/admin/login");
+            navigate("/admin/login", { replace: true });
           }}
-          className="flex items-center gap-2 text-slate-500 hover:text-red-500 transition-colors text-sm font-semibold"
+          className="flex items-center gap-2 text-slate-500 hover:text-red-500 transition-colors text-sm font-semibold cursor-pointer"
         >
           <LogOut size={16} /> Sign Out
         </button>

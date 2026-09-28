@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -35,7 +35,7 @@ function LogoFillLoader() {
       <div className="text-center">
         <p className="text-dark font-bold text-base">Verifying Credentials</p>
         <p className="text-slate-400 text-xs mt-1 font-medium">
-          Please wait a moment…
+          Opening secure portal…
         </p>
       </div>
       {/* progress bar */}
@@ -47,22 +47,35 @@ function LogoFillLoader() {
 }
 
 export default function AdminLogin() {
-  const adminLogin = useComplaintsStore((s) => s.adminLogin);
+  const { adminLogin, isAdminLoggedIn } = useComplaintsStore();
   const navigate = useNavigate();
   const [form, setForm] = useState({ username: "", password: "" });
   const [showPw, setShowPw] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  // If already logged in with a valid token, redirect immediately to dashboard
+  useEffect(() => {
+    const token = localStorage.getItem("adminToken");
+    if (isAdminLoggedIn && token) {
+      navigate("/admin/dashboard", { replace: true });
+    }
+  }, [isAdminLoggedIn, navigate]);
+
   const handle = async (e) => {
     e.preventDefault();
     setError("");
     setLoading(true);
-    await new Promise((r) => setTimeout(r, 1800));
-    const ok = await adminLogin(form.username, form.password);
-    setLoading(false);
-    if (ok) navigate("/admin/dashboard");
-    else setError("Invalid username or password. Please try again.");
+    try {
+      const ok = await adminLogin(form.username, form.password);
+      if (ok) {
+        navigate("/admin/dashboard", { replace: true });
+      } else {
+        setError("Invalid username or password. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

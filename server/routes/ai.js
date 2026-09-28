@@ -21,7 +21,6 @@ KEY KNOWLEDGE BASE:
   * Ward Official Contacts: [Ward Directory](/directory)
   * Government Schemes: [Citizen Welfare Schemes](/schemes)
   * Ward Survey & Polls: [Participate in Survey](/survey)
-  * Ward Ongoing Projects: [Ward Projects](/projects)
 - Common Civic Standards & SLAs:
   * Potholes / Road issues: 48 to 72 hours SLA after verification
   * Street light outages: 24 to 48 hours SLA
@@ -44,109 +43,130 @@ RESPONSE GUIDELINES:
 function getLocalCivicResponse(prompt, wardContext) {
   const p = (prompt || "").toLowerCase();
 
-  if (/hi|hello|hey|namaste|namaskara/i.test(p) && p.length < 25) {
+  // Kannada language query support
+  if (/ನಮಸ್ಕಾರ|ಹಲೋ|ದೂರು|ಗುಂಡಿ|ರಸ್ತೆ|ಕಸ|ನೀರು|ವಿದ್ಯುತ್|ಬೆಸ್ಕಾಂ|ಅಧಿಕಾರಿ/i.test(prompt)) {
+    return `🙏 **ನಮಸ್ಕಾರ! ಸಹಾಯ ನಾಗರಿಕ ಸಹಾಯವಾಣಿಗೆ ಸ್ವಾಗತ (Sahaya AI).**
+
+ನಾನು ನಿಮ್ಮ ವಾರ್ಡ್‌ನ ನಾಗರಿಕ ಸಮಸ್ಯೆಗಳಿಗೆ ನೆರವಾಗಬಲ್ಲೆ:
+- 🛣️ **ರಸ್ತೆ ಗುಂಡಿ ಅಥವಾ ಕಾಲುದಾರಿ ದೂರು**: **[ಹೊಸ ದೂರು ದಾಖಲಿಸಿ](/complaints)**
+- 🔍 **ನಿಮ್ಮ ದೂರಿನ ಸ್ಥಿತಿ ತಿಳಿಯಿರಿ**: **[ದೂರು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ](/track)**
+- 📞 **ವಾರ್ಡ್ ಇಂಜಿನಿಯರ್ ಹಾಗೂ ಅಧಿಕಾರಿಗಳ ಸಂಪರ್ಕ**: **[ಅಧಿಕಾರಿಗಳ ವಿವರ](/directory)**
+- 🚨 **ತುರ್ತು ಸಹಾಯವಾಣಿಗಳು**: ಪೊಲೀಸ್ (**112**), ಬೆಸ್ಕಾಂ ವಿದ್ಯುತ್ (**1912**), ಜಲಮಂಡಳಿ ನೀರು (**1916**), ಬಿಬಿಎಂಪಿ (**1533**).
+
+ನಿಮಗೆ ಯಾವ ವಿಷಯದಲ್ಲಿ ಸಹಾಯ ಬೇಕು?`;
+  }
+
+  if (/hi|hello|hey|namaste|namaskara/i.test(p) && p.length < 35) {
     return `👋 **Namaskara! I am Sahaya AI, your 24/7 Civic Assistant.**
 
-I can help you with:
-- 🛣️ **Filing Grievances**: [File New Complaint](/complaints) (Potholes, garbage, lights)
+I can instantly assist you with:
+- 🛣️ **Filing Grievances**: [File New Complaint](/complaints) *(Potholes, garbage, streetlights)*
 - 🔍 **Tracking Tickets**: [Track Complaint Status](/track)
 - 📞 **Ward Officials & Engineers**: [View Ward Directory](/directory)
-- 💧 **Water & Power Helplines**: BESCOM (1912), BWSSB (1916), BBMP (1533)
+- 💧 **Utility Helplines**: BESCOM (**1912**), BWSSB (**1916**), BBMP (**1533**)
 - 📜 **Citizen Schemes**: [Welfare Schemes & Benefits](/schemes)
 
-How can I assist your neighborhood today?`;
+How can I help you today?`;
   }
 
-  if (/pothole|road|footpath|asphalt|tar|crater|pavement/i.test(p)) {
+  if (/pothole|road|footpath|asphalt|tar|crater|pavement|repair/i.test(p)) {
     return `🛣️ **Road & Pothole Repair Assistance**
 
-1. **Submit via Portal**: You can report potholes with location GPS and photo evidence at **[File New Complaint](/complaints)**.
-2. **Official Escalation**: Contact your Ward Assistant Executive Engineer (AEE) or Junior Engineer via the **[Ward Directory](/directory)**.
-3. **BBMP Sahaya Helpline**: Call **1533** or toll-free **080-22660000**.
-4. **Standard SLA**: Official BBMP resolution time for critical road potholes is **48–72 hours**.`;
+1. **Submit Online**: You can file a pothole grievance with GPS location and photo evidence at **[File New Complaint](/complaints)**.
+2. **Official Escalation**: Your Ward Assistant Executive Engineer (AEE) receives instant automated notification.
+3. **BBMP Control Room**: Call toll-free **1533** or **080-22660000**.
+4. **Standard SLA**: Official BBMP resolution time for road potholes is **48–72 hours**.`;
   }
 
-  if (/garbage|waste|clean|dump|trash|sanitation|sweeper|pourakarmika/i.test(p)) {
+  if (/garbage|waste|clean|dump|trash|sanitation|sweeper|pourakarmika|smell/i.test(p)) {
     return `🗑️ **Garbage & Sanitation Services**
 
-- **Collection Timings**: Daily door-to-door collection runs from **6:30 AM to 10:30 AM**.
+- **Door-to-Door Timings**: Daily collection runs from **6:30 AM to 10:30 AM**.
 - **Segregation Protocol**:
   * 🟢 **Green Bin**: Wet/organic kitchen waste.
   * 🔵 **Blue Bin**: Dry recyclable plastic, paper, metal.
-  * 🔴 **Red Wrap**: Sanitary and bio-medical waste.
-- **Blackspots & Illegal Dumping**: Please snap a photo and file a report at **[File New Complaint](/complaints)**.
-- **Department Contact**: Reach the Senior Health Inspector (SHI) for your ward in the **[Ward Directory](/directory)**.`;
+  * 🔴 **Red Wrap**: Sanitary and hazardous waste.
+- **Report Blackspots**: Snap a picture and report at **[File New Complaint](/complaints)**.
+- **Department Contact**: Reach the Senior Health Inspector (SHI) in the **[Ward Directory](/directory)**.`;
   }
 
-  if (/water|leak|drain|sewage|bwssb|pipe|kaveri|cauvery/i.test(p)) {
-    return `💧 **Water Supply & Sewage Assistance**
+  if (/water|leak|drain|sewage|bwssb|pipe|kaveri|cauvery|drinking/i.test(p)) {
+    return `💧 **Water Supply & Drainage Assistance**
 
-- **BWSSB 24/7 Helpline**: Call **1916** for Cauvery water supply disruption, low pressure, or pipeline leaks.
-- **Sewage Overflow / Blocked Drains**: File an urgent report at **[File New Complaint](/complaints)** under the *Drainage & Water Supply* category.
-- **Responsible Officer**: BWSSB Assistant Executive Engineer (AEE - Water Supply). Check exact numbers in our **[Ward Directory](/directory)**.`;
+- **BWSSB 24/7 Helpline**: Call **1916** for Cauvery water supply disruption or pipe bursts.
+- **Sewage Overflow / Blocked Drains**: File an urgent ticket at **[File New Complaint](/complaints)**.
+- **Responsible Officer**: BWSSB Assistant Executive Engineer (AEE - Water Supply). View direct phone in the **[Ward Directory](/directory)**.`;
   }
 
-  if (/light|electricity|power|bescom|dark|pole|wire/i.test(p)) {
+  if (/light|electricity|power|bescom|dark|pole|wire|transformer/i.test(p)) {
     return `💡 **Streetlight & Electricity Inquiries**
 
-- **BESCOM 24/7 Helpline**: Call **1912** or WhatsApp **9449844640** for electrical faults or live wires.
-- **Non-functional Streetlights**: Report defective fixtures via **[File New Complaint](/complaints)**. Expected resolution time is **24 to 48 hours**.
-- **Ward Electrician / Junior Engineer**: Check contacts in the **[Ward Directory](/directory)**.`;
+- **BESCOM 24/7 Helpline**: Call **1912** or WhatsApp **9449844640** for power failures or dangerous live wires.
+- **Defective Streetlights**: Report non-working fixtures via **[File New Complaint](/complaints)** *(24–48 hr SLA)*.
+- **Ward Electrician**: Check direct contact details in the **[Ward Directory](/directory)**.`;
   }
 
   if (/official|engineer|contact|phone|number|aee|corporator|mla|who.*contact/i.test(p)) {
-    return `📞 **Ward Governance & Official Contacts**
+    return `📞 **Ward Governance & Official Directory**
 
 You can view the full roster of verified municipal engineers, health inspectors, and elected representatives at:
 👉 **[Open Ward Official Directory](/directory)**
 
 Key BBMP numbers:
-- **BBMP Central Control Room**: 1533 / 080-22660000
+- **BBMP Control Room**: 1533 / 080-22660000
 - **Traffic Police**: 103 / 080-22943030
-- **Emergency Police**: 112`;
+- **Police Emergency**: 112`;
   }
 
-  if (/track|status|ticket|complaint id|where is my/i.test(p)) {
+  if (/track|status|ticket|complaint id|where is my|check/i.test(p)) {
     return `🔍 **Track Your Complaint**
 
-You can check the real-time status, official notes, and before-and-after photo verification of any grievance:
+You can check real-time progress, official resolution notes, and before-and-after photo verification at:
 👉 **[Go to Track Complaint Page](/track)**
 
 Enter your Complaint Tracking ID (e.g. \`CHM-2026-...\`) or your registered 10-digit mobile number.`;
   }
 
-  if (/scheme|subsidy|gruha|shakti|yuvonidhi|kalyana|bjp|government/i.test(p)) {
+  if (/scheme|subsidy|gruha|shakti|yuvonidhi|kalyana|bjp|government|pmay/i.test(p)) {
     return `📜 **Government & Citizen Welfare Schemes**
 
-Explore welfare benefits, eligibility criteria, and application links at:
+Explore welfare benefits, eligibility criteria, and official portals at:
 👉 **[Welfare Schemes Portal](/schemes)**
 
 Popular programs include:
 - **Gruha Jyothi**: Free electricity up to 200 units.
 - **Gruha Lakshmi**: Monthly financial assistance for women heads of household.
 - **Shakti Scheme**: Free bus travel for women across Karnataka state transport.
-- **Ayushman Bharat / PM-JAY**: Cashless healthcare coverage up to ₹5 Lakhs.`;
+- **PMAY Urban**: Housing subsidy up to ₹2.67 Lakhs.`;
   }
 
-  if (/emergency|ambulance|fire|police|accident/i.test(p)) {
-    return `🚨 **Emergency Helplines (Bangalore)**
+  if (/emergency|ambulance|fire|police|accident|disaster/i.test(p)) {
+    return `🚨 **Emergency Helplines (Bengaluru)**
 
 - **Police Emergency**: **112**
-- **Ambulance (Health Emergency)**: **108**
+- **Ambulance (Medical)**: **108**
 - **Fire & Rescue**: **101**
 - **Women's Safety Helpline**: **1091**
 - **Senior Citizens Helpline**: **1090**
-- **Child Helpline**: **1098**
 - **BBMP Disaster Control**: **080-22221188** / **1533**`;
   }
 
   return `🤖 **Sahaya Civic Assistant**
 
-Thank you for your inquiry. To resolve this quickly for your neighborhood:
-- If this is a physical grievance (pothole, streetlight, garbage, flooding), please **[File a Complaint](/complaints)** so the assigned Ward Engineer receives automated SMS/email alerts.
-- To contact your localized BBMP, BESCOM, or BWSSB engineer directly, visit the **[Ward Directory](/directory)**.
+Thank you for your question! Here are the best ways to get this resolved:
+- If this is an issue requiring ground inspection, please **[File a Complaint](/complaints)** so the assigned Ward Engineer receives automated SMS alerts.
+- To reach your ward engineers and officials directly, visit the **[Ward Directory](/directory)**.
 - For emergency municipal escalations, dial BBMP Sahaya at **1533** or Police at **112**.`;
 }
+
+// Helper: Fast promise timeout
+const withTimeout = (promise, ms = 2500) =>
+  Promise.race([
+    promise,
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error("Timeout")), ms)
+    ),
+  ]);
 
 // POST /api/chat
 router.post("/", async (req, res) => {
@@ -157,11 +177,23 @@ router.post("/", async (req, res) => {
       return res.status(400).json({ error: "Prompt is required" });
     }
 
+    const trimmedPrompt = prompt.trim();
+    const pLower = trimmedPrompt.toLowerCase();
+
+    // Fast-path: Instant matching for common civic patterns (< 10ms)
+    const isCivicPattern = /^(hi|hello|hey|namaskara|namaste)$|pothole|garbage|waste|water|sewage|drain|bescom|streetlight|official|engineer|track|status|scheme|subsidy|emergency|ambulance|police|ನಮಸ್ಕಾರ/i.test(
+      pLower
+    );
+
+    // If query matches a known pattern or is a simple greeting, return instantly without network lag
+    if (isCivicPattern && trimmedPrompt.length < 80) {
+      const fastResponse = getLocalCivicResponse(trimmedPrompt, wardContext);
+      return res.json({ response: fastResponse, provider: "instant-civic-engine" });
+    }
+
     const systemPrompt = buildSystemPrompt(wardContext);
 
-    // ──────────────────────────────────────────────────────────
-    // Tier 1: Google Gemini (fastest, smartest, rich multilingual)
-    // ──────────────────────────────────────────────────────────
+    // Tier 1: Google Gemini (if key present)
     if (
       process.env.GEMINI_API_KEY &&
       process.env.GEMINI_API_KEY !== "YOUR_GEMINI_KEY_HERE" &&
@@ -169,23 +201,21 @@ router.post("/", async (req, res) => {
     ) {
       try {
         const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        // Try gemini-1.5-flash or gemini-2.0-flash
         const model = genAI.getGenerativeModel({
           model: "gemini-1.5-flash",
           systemInstruction: systemPrompt,
         });
 
-        // Format history for Gemini SDK
         const geminiHistory = (history || [])
           .filter((m) => m && m.text && m.sender)
-          .slice(-6)
+          .slice(-4)
           .map((m) => ({
             role: m.sender === "user" ? "user" : "model",
             parts: [{ text: m.text }],
           }));
 
         const chat = model.startChat({ history: geminiHistory });
-        const result = await chat.sendMessage(prompt);
+        const result = await withTimeout(chat.sendMessage(trimmedPrompt), 3000);
         const reply = result.response.text();
 
         if (reply && reply.trim()) {
@@ -196,9 +226,7 @@ router.post("/", async (req, res) => {
       }
     }
 
-    // ──────────────────────────────────────────────────────────
-    // Tier 2: Hugging Face Inference (Qwen2.5 or Llama 3)
-    // ──────────────────────────────────────────────────────────
+    // Tier 2: Hugging Face Inference (with strict 2.5s timeout for speed)
     if (
       process.env.HF_TOKEN &&
       process.env.HF_TOKEN !== "YOUR_HF_TOKEN_HERE" &&
@@ -206,12 +234,16 @@ router.post("/", async (req, res) => {
     ) {
       try {
         const hf = new HfInference(process.env.HF_TOKEN);
+        const messages = [
+          {
+            role: "system",
+            content:
+              "You are Sahaya AI, Bengaluru Municipal Civic Assistant. Keep responses concise, helpful, and under 150 words.",
+          },
+        ];
 
-        const messages = [{ role: "system", content: systemPrompt }];
-
-        // Add recent conversation history (last 4 turns)
         if (Array.isArray(history)) {
-          history.slice(-4).forEach((m) => {
+          history.slice(-2).forEach((m) => {
             if (m && m.text && m.sender) {
               messages.push({
                 role: m.sender === "user" ? "user" : "assistant",
@@ -221,28 +253,27 @@ router.post("/", async (req, res) => {
           });
         }
 
-        messages.push({ role: "user", content: prompt });
+        messages.push({ role: "user", content: trimmedPrompt });
 
-        const response = await hf.chatCompletion({
+        const responsePromise = hf.chatCompletion({
           model: "Qwen/Qwen2.5-72B-Instruct",
           messages,
-          max_tokens: 600,
+          max_tokens: 220,
           temperature: 0.7,
         });
 
+        const response = await withTimeout(responsePromise, 2500);
         const reply = response.choices?.[0]?.message?.content;
         if (reply && reply.trim()) {
           return res.json({ response: reply.trim(), provider: "huggingface" });
         }
       } catch (hfErr) {
-        console.warn("HuggingFace API error, falling back:", hfErr.message);
+        console.warn("HuggingFace timeout/error, using instant civic engine:", hfErr.message);
       }
     }
 
-    // ──────────────────────────────────────────────────────────
-    // Tier 3: Local Civic Knowledge Engine (Zero-fail fallback)
-    // ──────────────────────────────────────────────────────────
-    const fallbackResponse = getLocalCivicResponse(prompt, wardContext);
+    // Tier 3: Local Civic Knowledge Engine (Zero-fail, instant response)
+    const fallbackResponse = getLocalCivicResponse(trimmedPrompt, wardContext);
     return res.json({ response: fallbackResponse, provider: "local-civic-engine" });
   } catch (err) {
     console.error("AI chat general error:", err);
@@ -255,136 +286,111 @@ router.post("/", async (req, res) => {
 
 // POST /api/chat/analyze (Image & Description Grievance Triage)
 router.post("/analyze", async (req, res) => {
-  try {
-    const { photoData, description } = req.body;
+  const { photoData, description = "" } = req.body;
+  const d = (description || "").toLowerCase();
 
-    // Default structure
-    const fallbackTriage = {
-      category: "Road Repair & Potholes",
-      priority: "Medium",
-      score: 65,
-      summary: description
-        ? `Citizen reported: ${description}`
-        : "Visual evidence submitted for ward inspection.",
-    };
+  // Intelligent civic heuristics engine
+  const fallbackTriage = {
+    category: "Road Repair & Potholes",
+    priority: "Medium",
+    score: 65,
+    summary: description
+      ? `Reported civic defect: ${description.slice(0, 120)}`
+      : "Visual evidence submitted for ward engineering triage.",
+  };
 
-    // If Gemini key is available, use multimodal or text categorization
-    if (
-      process.env.GEMINI_API_KEY &&
-      process.env.GEMINI_API_KEY !== "YOUR_GEMINI_KEY_HERE" &&
-      process.env.GEMINI_API_KEY.trim().length > 10
-    ) {
-      try {
-        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  if (/light|bulb|lamp|pole|dark|wire|bescom|fuse|street.*light/i.test(d)) {
+    fallbackTriage.category = "Street Lighting";
+    fallbackTriage.priority = "High";
+    fallbackTriage.score = 80;
+    fallbackTriage.summary = "Defective municipal lighting reported. Nighttime safety hazard requiring BESCOM/BBMP electrical crew dispatch.";
+  } else if (/garbage|waste|trash|dump|smell|stench|pourakarmika|debris|litter|bin/i.test(d)) {
+    fallbackTriage.category = "Sanitation / Garbage Collection";
+    fallbackTriage.priority = "High";
+    fallbackTriage.score = 85;
+    fallbackTriage.summary = "Solid waste accumulation detected. Escalated for Senior Health Inspector (SHI) mechanized clearing.";
+  } else if (/water|leak|pipe|burst|drain|sewage|manhole|flooding|stagnant|cauvery|bwssb/i.test(d)) {
+    fallbackTriage.category = "Water Supply & Drainage";
+    fallbackTriage.priority = "Urgent";
+    fallbackTriage.score = 92;
+    fallbackTriage.summary = "Water supply leakage or sewage overflow reported. Critical utility escalation flagged for BWSSB emergency team.";
+  } else if (/footpath|pavement|sidewalk|kerb|pedestrian|slab/i.test(d)) {
+    fallbackTriage.category = "Footpath / Pavement";
+    fallbackTriage.priority = "Medium";
+    fallbackTriage.score = 70;
+    fallbackTriage.summary = "Broken or missing footpath slabs endangering pedestrian transit. Assigned to Ward Junior Engineer.";
+  } else if (/encroach|illegal.*construction|blocked.*path|vendor|shed/i.test(d)) {
+    fallbackTriage.category = "Encroachment";
+    fallbackTriage.priority = "High";
+    fallbackTriage.score = 75;
+    fallbackTriage.summary = "Public right-of-way obstruction reported. Queued for Ward Revenue & Enforcement inspection.";
+  } else if (/park|garden|tree|branch|bench|playground/i.test(d)) {
+    fallbackTriage.category = "Park / Public Space";
+    fallbackTriage.priority = "Medium";
+    fallbackTriage.score = 60;
+    fallbackTriage.summary = "Public park infrastructure or greenery defect. Routed to BBMP Horticulture division.";
+  } else if (/dog|stray|animal|bite|monkey|cattle|cow/i.test(d)) {
+    fallbackTriage.category = "Stray Animals";
+    fallbackTriage.priority = "Medium";
+    fallbackTriage.score = 65;
+    fallbackTriage.summary = "Stray animal nuisance or safety concern reported. Alert sent to Ward Animal Husbandry squad.";
+  } else if (/noise|sound|speaker|pollution|smoke|dust|air/i.test(d)) {
+    fallbackTriage.category = "Noise / Pollution";
+    fallbackTriage.priority = "Medium";
+    fallbackTriage.score = 60;
+    fallbackTriage.summary = "Environmental nuisance reported exceeding allowable municipal thresholds.";
+  } else if (/pothole|crater|asphalt|tar|road|ditch|hump/i.test(d)) {
+    fallbackTriage.category = "Road Repair & Potholes";
+    fallbackTriage.priority = "High";
+    fallbackTriage.score = 85;
+    fallbackTriage.summary = "Significant asphalt surface defect / pothole verified. 48-72h SLA dispatch for cold-mix patch repair.";
+  }
 
-        const promptText = `You are an AI Triage system for the Bengaluru Civic Portal.
-Analyze the following civic issue:
-User description: "${description || "None provided"}"
+  // If Gemini key is available, attempt multimodal enhancement with 3s timeout
+  if (
+    process.env.GEMINI_API_KEY &&
+    process.env.GEMINI_API_KEY !== "YOUR_GEMINI_KEY_HERE" &&
+    process.env.GEMINI_API_KEY.trim().length > 10
+  ) {
+    try {
+      const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+      const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
-Return a STRICT JSON object only (no markdown, no extra text):
+      const promptText = `Analyze this civic problem: "${description || "Photo evidence"}"
+Return STRICT JSON ONLY:
 {
   "category": "one of: Road Repair & Potholes, Street Lighting, Sanitation / Garbage Collection, Water Supply & Drainage, Footpath / Pavement, Encroachment, Park / Public Space, Stray Animals, Noise / Pollution, Other",
   "priority": "one of: Low, Medium, High, Urgent",
-  "score": integer between 1 and 100,
-  "summary": "Formal municipal defect specification in 2 sentences"
+  "score": integer 1-100,
+  "summary": "2 sentences describing defect"
 }`;
 
-        const parts = [{ text: promptText }];
-
-        if (photoData && photoData.startsWith("data:image/")) {
-          const match = photoData.match(/^data:(image\/\w+);base64,(.+)$/);
-          if (match) {
-            parts.push({
-              inlineData: {
-                mimeType: match[1],
-                data: match[2],
-              },
-            });
-          }
-        }
-
-        const result = await model.generateContent(parts);
-        const responseText = result.response.text();
-        const jsonMatch = responseText.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          return res.json(JSON.parse(jsonMatch[0]));
-        }
-      } catch (geminiErr) {
-        console.warn("Gemini analyze failed, trying HuggingFace...", geminiErr.message);
-      }
-    }
-
-    // Hugging Face fallback
-    if (
-      process.env.HF_TOKEN &&
-      process.env.HF_TOKEN !== "YOUR_HF_TOKEN_HERE" &&
-      process.env.HF_TOKEN.trim().length > 10
-    ) {
-      try {
-        const hf = new HfInference(process.env.HF_TOKEN);
-        let imageCaption = "";
-
-        if (photoData) {
-          const base64Data = photoData.replace(/^data:image\/\w+;base64,/, "");
-          const buffer = Buffer.from(base64Data, "base64");
-          const blob = new Blob([buffer]);
-
-          const captionResponse = await hf.imageToText({
-            data: blob,
-            model: "Salesforce/blip-image-captioning-large",
+      const parts = [{ text: promptText }];
+      if (photoData && photoData.startsWith("data:image/")) {
+        const match = photoData.match(/^data:(image\/\w+);base64,(.+)$/);
+        if (match) {
+          parts.push({
+            inlineData: {
+              mimeType: match[1],
+              data: match[2],
+            },
           });
-          imageCaption = captionResponse.generated_text;
         }
-
-        const textToAnalyze = `Description: ${description || "None"}. Photo Analysis: ${imageCaption || "None"}`;
-        const triagePrompt = `You are an AI Triage system for the Bengaluru Civic Portal.
-Analyze the following: ${textToAnalyze}
-Return ONLY a JSON object:
-{
-  "category": "Road Repair & Potholes",
-  "priority": "Medium",
-  "score": 60,
-  "summary": "Brief 2-sentence description"
-}`;
-
-        const response = await hf.chatCompletion({
-          model: "Qwen/Qwen2.5-72B-Instruct",
-          messages: [{ role: "user", content: triagePrompt }],
-          max_tokens: 300,
-        });
-
-        const reply = response.choices?.[0]?.message?.content || "";
-        const jsonMatch = reply.match(/\{[\s\S]*\}/);
-        if (jsonMatch) {
-          return res.json(JSON.parse(jsonMatch[0]));
-        }
-      } catch (hfErr) {
-        console.warn("HF analyze failed:", hfErr.message);
       }
-    }
 
-    // Heuristic triage fallback
-    const d = (description || "").toLowerCase();
-    if (/light|pole|bulb|dark/i.test(d)) {
-      fallbackTriage.category = "Street Lighting";
-      fallbackTriage.priority = "High";
-      fallbackTriage.score = 75;
-    } else if (/garbage|waste|smell|dump/i.test(d)) {
-      fallbackTriage.category = "Sanitation / Garbage Collection";
-      fallbackTriage.priority = "High";
-      fallbackTriage.score = 80;
-    } else if (/water|leak|pipe|drain|flood/i.test(d)) {
-      fallbackTriage.category = "Water Supply & Drainage";
-      fallbackTriage.priority = "Urgent";
-      fallbackTriage.score = 90;
+      const result = await withTimeout(model.generateContent(parts), 3000);
+      const responseText = result.response.text();
+      const jsonMatch = responseText.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        return res.json(JSON.parse(jsonMatch[0]));
+      }
+    } catch (geminiErr) {
+      console.warn("Gemini analyze skipped/timed out, using smart heuristic:", geminiErr.message);
     }
-
-    res.json(fallbackTriage);
-  } catch (err) {
-    console.error("AI Analyze error:", err);
-    res.status(500).json({ error: "Failed to analyze complaint" });
   }
+
+  // Always return clean successful triage
+  return res.json(fallbackTriage);
 });
 
 export default router;

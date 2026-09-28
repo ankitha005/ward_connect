@@ -42,7 +42,7 @@ const PLATFORM_LINKS = [
   { name: "Home", path: "/" },
   { name: "Government Schemes", path: "/schemes" },
   { name: "Report a Complaint", path: "/complaints" },
-  { name: "Development Projects", path: "/projects" },
+  { name: "Citizen Survey", path: "/survey" },
   { name: "Track Complaint", path: "/track" },
 ];
 
@@ -93,10 +93,10 @@ const Footer = () => {
               </div>
               <div>
                 <h3 className="text-white text-lg font-extrabold tracking-tight leading-tight">
-                  Bengaluru Civic
+                  ADDA 360
                 </h3>
-                <p className="text-[11px] text-amber-400 font-bold uppercase tracking-[0.2em]">
-                  BBMP WARDS
+                <p className="text-[10px] text-amber-400 font-bold uppercase tracking-wider">
+                  Accessible Digital Development & Administration 360
                 </p>
               </div>
             </div>

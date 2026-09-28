@@ -5,10 +5,12 @@ import EmergencyTicker from "../../components/EmergencyTicker";
 import QuickReportWidget from "../../components/QuickReportWidget";
 import AIChatbot from "../../components/AIChatbot";
 import ScrollToTop from "../../components/ScrollToTop";
+import CustomCursor from "../../components/CustomCursor";
 
 const MainLayout = () => {
   return (
     <div className="min-h-screen flex flex-col font-inter">
+      <CustomCursor />
       <ScrollToTop />
       {/* Fixed Navbar sits at top on its own */}
       <Navbar />

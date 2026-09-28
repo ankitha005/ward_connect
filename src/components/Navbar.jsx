@@ -8,11 +8,16 @@ import {
   ChevronDown,
   Moon,
   Sun,
+  Volume2,
+  VolumeX,
+  Music,
 } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/logo.svg";
 import WeatherWidget from "./WeatherWidget";
+import { prefetchPath } from "../utils/routePrefetch";
+import { isMuted, toggleMute, toggleAmbient, isAmbientPlaying } from "../utils/soundEffects";
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -20,11 +25,28 @@ const Navbar = () => {
   const [darkMode, setDarkMode] = useState(
     () => localStorage.getItem("darkMode") === "true",
   );
+  const [soundMuted, setSoundMuted] = useState(() => isMuted());
+  const [ambientPlaying, setAmbientPlaying] = useState(() => isAmbientPlaying());
   const location = useLocation();
   const navRef = useRef(null);
 
   const isHomePage = location.pathname === "/";
   const isSolid = !isHomePage || scrolled;
+
+  useEffect(() => {
+    const handleMuteChange = (e) => {
+      setSoundMuted(e.detail?.muted ?? isMuted());
+    };
+    const handleAmbientChange = (e) => {
+      setAmbientPlaying(e.detail?.playing ?? isAmbientPlaying());
+    };
+    window.addEventListener("civic-sound-mute-change", handleMuteChange);
+    window.addEventListener("civic-ambient-music-change", handleAmbientChange);
+    return () => {
+      window.removeEventListener("civic-sound-mute-change", handleMuteChange);
+      window.removeEventListener("civic-ambient-music-change", handleAmbientChange);
+    };
+  }, []);
 
   useEffect(() => {
     if (darkMode) {
@@ -50,7 +72,6 @@ const Navbar = () => {
     { name: "Home", path: "/", icon: "🏠" },
     { name: "Schemes", path: "/schemes", icon: "📋" },
     { name: "Complaints", path: "/complaints", icon: "📝" },
-    { name: "Projects", path: "/projects", icon: "🏗️" },
     { name: "Directory", path: "/directory", icon: "📖" },
     { name: "Announcements", path: "/announcements", icon: "📢" },
     { name: "Activity", path: "/activity", icon: "⚡" },
@@ -104,11 +125,11 @@ const Navbar = () => {
           WebkitBackdropFilter: isSolid ? "blur(12px)" : "none",
         }}
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex h-[72px] items-center">
+        <div className="max-w-[1440px] mx-auto px-2.5 sm:px-4 lg:px-6">
+          <div className="flex h-[72px] items-center justify-between gap-2 md:gap-3">
             {/* Logo Section */}
-            <div className="flex-1 flex justify-start">
-              <Link to="/" className="flex items-center gap-3 group">
+            <div className="shrink-0 flex items-center">
+              <Link to="/" className="flex items-center gap-2.5 sm:gap-3 group">
                 <motion.div
                   className="relative"
                   whileHover={{ rotate: [0, -5, 5, 0] }}
@@ -131,22 +152,22 @@ const Navbar = () => {
                   >
                     <img
                       src={logo}
-                      alt="Bengaluru Civic Portal Logo"
-                      className="relative h-10 w-auto object-contain drop-shadow-[0_5px_15px_rgba(0,0,0,0.3)]"
+                      alt="ADDA 360 Logo"
+                      className="relative h-9 sm:h-10 w-auto object-contain drop-shadow-[0_5px_15px_rgba(0,0,0,0.3)]"
                     />
                   </div>
                 </motion.div>
 
                 <div className="hidden sm:flex flex-col">
                   <motion.div
-                    className={`text-xl font-black tracking-tight leading-tight transition-colors duration-300 uppercase ${
+                    className={`text-lg sm:text-xl font-black tracking-tight leading-tight transition-colors duration-300 uppercase ${
                       isSolid ? "text-slate-900" : "text-white drop-shadow-md"
                     }`}
                     whileHover={{ letterSpacing: "0.04em" }}
                   >
-                    Bengaluru{" "}
+                    ADDA{" "}
                     <span className="bg-gradient-to-r from-red-600 to-amber-500 bg-clip-text text-transparent">
-                      Civic Wards
+                      360
                     </span>
                   </motion.div>
                   <div
@@ -154,9 +175,9 @@ const Navbar = () => {
                       isSolid ? "text-slate-500" : "text-white/80"
                     }`}
                   >
-                    <Sparkles className="w-3 h-3 text-brand-orange" />
-                    <span className="text-[10px] font-black uppercase tracking-[0.25em]">
-                      Official Civic Platform
+                    <Sparkles className="w-3 h-3 text-brand-orange shrink-0" />
+                    <span className="text-[8.5px] xl:text-[9.5px] font-bold uppercase tracking-wider whitespace-nowrap">
+                      Accessible Digital Development & Administration 360
                     </span>
                   </div>
                 </div>
@@ -164,9 +185,9 @@ const Navbar = () => {
             </div>
 
             {/* Desktop Navigation */}
-            <div className="hidden lg:flex items-center flex-none justify-end">
+            <div className="hidden lg:flex items-center shrink-0">
               <div
-                className={`flex items-center gap-1 p-1.5 rounded-[1.5rem] transition-all duration-200 shadow-inner ${
+                className={`flex items-center gap-0.5 xl:gap-1 p-1 xl:p-1.5 rounded-[1.5rem] transition-all duration-200 shadow-inner ${
                   isSolid
                     ? "bg-slate-100/80 ring-2 ring-orange-100"
                     : "bg-black/20 ring-1 ring-white/20"
@@ -176,21 +197,25 @@ const Navbar = () => {
                   .filter((l) =>
                     [
                       "Home",
+                      "Schemes",
                       "Complaints",
                       "Announcements",
-                      "Projects",
-                      "Volunteer",
-                      "Survey",
                     ].includes(l.name),
                   )
                   .map((link) => (
                     <NavLink
                       key={link.name}
                       to={link.path}
-                      onMouseEnter={() => setHoveredLink(link.name)}
+                      onMouseEnter={() => {
+                        setHoveredLink(link.name);
+                        prefetchPath(link.path);
+                      }}
+                      onTouchStart={() => prefetchPath(link.path)}
                       onMouseLeave={() => setHoveredLink(null)}
                       className={({ isActive }) =>
-                        `relative px-3 py-2 text-[12px] xl:text-[13px] font-bold rounded-full transition-all duration-300 uppercase tracking-wide shrink-0 ${
+                        `relative px-2.5 xl:px-3 py-1.5 xl:py-2 text-[12px] xl:text-[13px] font-bold rounded-full transition-all duration-300 uppercase tracking-wide shrink-0 ${
+                          link.name === "Announcements" ? "hidden xl:inline-block" : ""
+                        } ${
                           isActive
                             ? isSolid
                               ? "text-brand-orange"
@@ -241,7 +266,7 @@ const Navbar = () => {
                 {/* 'More' Dropdown */}
                 <div className="relative group px-1">
                   <button
-                    className={`relative px-3 py-2 text-[12px] xl:text-[13px] font-bold rounded-full transition-all duration-300 uppercase tracking-wide flex items-center gap-1 focus:outline-none ${isSolid ? "text-slate-600 hover:text-slate-900" : "text-white/80 hover:text-white"}`}
+                    className={`relative px-2.5 xl:px-3 py-1.5 xl:py-2 text-[12px] xl:text-[13px] font-bold rounded-full transition-all duration-300 uppercase tracking-wide flex items-center gap-1 focus:outline-none ${isSolid ? "text-slate-600 hover:text-slate-900" : "text-white/80 hover:text-white"}`}
                   >
                     More{" "}
                     <ChevronDown
@@ -250,22 +275,37 @@ const Navbar = () => {
                     />
                   </button>
                   <div className="absolute top-10 right-0 w-48 opacity-0 translate-y-3 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-200 bg-white rounded-2xl shadow-xl shadow-black/10 border border-slate-100 p-2 flex flex-col z-[60] group-hover:pointer-events-auto pointer-events-none">
+                    {/* Announcements in dropdown when on lg laptop screens */}
+                    <NavLink
+                      to="/announcements"
+                      onMouseEnter={() => prefetchPath("/announcements")}
+                      onTouchStart={() => prefetchPath("/announcements")}
+                      className={({ isActive }) =>
+                        `xl:hidden flex items-center gap-3 px-4 py-2.5 text-[13px] font-bold rounded-xl transition-all duration-200 uppercase tracking-wide ${
+                          isActive
+                            ? "text-brand-orange bg-orange-50"
+                            : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                        }`
+                      }
+                    >
+                      Announcements
+                    </NavLink>
                     {navLinks
                       .filter(
                         (l) =>
                           ![
                             "Home",
                             "Complaints",
+                            "Schemes",
                             "Announcements",
-                            "Projects",
-                            "Volunteer",
-                            "Survey",
                           ].includes(l.name),
                       )
                       .map((link) => (
                         <NavLink
                           key={link.name}
                           to={link.path}
+                          onMouseEnter={() => prefetchPath(link.path)}
+                          onTouchStart={() => prefetchPath(link.path)}
                           className={({ isActive }) =>
                             `flex items-center gap-3 px-4 py-2.5 text-[13px] font-bold rounded-xl transition-all duration-200 uppercase tracking-wide ${
                               isActive
@@ -281,67 +321,139 @@ const Navbar = () => {
                 </div>
               </div>
             </div>
-            {/* Admin CTA + Mobile Toggle */}
-            <div className="flex-1 flex items-center gap-2 md:gap-3 justify-end">
+
+            {/* Admin CTA + Controls + Mobile Toggle */}
+            <div className="shrink-0 flex items-center gap-1.5 sm:gap-2 justify-end">
               <WeatherWidget />
-              {/* Dark Mode Toggle */}
-              <motion.button
-                onClick={() => setDarkMode((d) => !d)}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                className={`w-9 h-9 rounded-full flex items-center justify-center transition-all border hidden md:flex ${
+
+              {/* Integrated Micro-toolbar capsule (Dark mode, Sound, Music) */}
+              <div
+                className={`hidden md:flex items-center p-1 rounded-full border transition-all duration-200 shadow-sm ${
                   isSolid
-                    ? "bg-slate-100 border-slate-200 text-slate-600 hover:bg-slate-200"
-                    : "bg-white/15 border-white/20 text-white hover:bg-white/25"
+                    ? "bg-slate-100/90 border-slate-200/90"
+                    : "bg-white/10 border-white/20 backdrop-blur-md"
                 }`}
-                title={
-                  darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"
-                }
               >
-                <AnimatePresence mode="wait">
-                  {darkMode ? (
-                    <motion.div
-                      key="sun"
-                      initial={{ rotate: -90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: 90, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Sun size={16} className="text-amber-400" />
-                    </motion.div>
+                {/* Dark Mode Toggle */}
+                <motion.button
+                  onClick={() => setDarkMode((d) => !d)}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all ${
+                    isSolid
+                      ? "text-slate-600 hover:text-slate-900 hover:bg-white shadow-xs"
+                      : "text-white/80 hover:text-white hover:bg-white/20"
+                  }`}
+                  title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
+                >
+                  <AnimatePresence mode="wait">
+                    {darkMode ? (
+                      <motion.div
+                        key="sun"
+                        initial={{ rotate: -90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: 90, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Sun size={15} className="text-amber-400" />
+                      </motion.div>
+                    ) : (
+                      <motion.div
+                        key="moon"
+                        initial={{ rotate: 90, opacity: 0 }}
+                        animate={{ rotate: 0, opacity: 1 }}
+                        exit={{ rotate: 90, opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                      >
+                        <Moon size={15} />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.button>
+
+                {/* Divider */}
+                <div
+                  className={`w-[1px] h-4 mx-0.5 ${
+                    isSolid ? "bg-slate-300" : "bg-white/20"
+                  }`}
+                />
+
+                {/* Sound Effects Toggle */}
+                <motion.button
+                  onClick={toggleMute}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all ${
+                    isSolid
+                      ? "text-slate-600 hover:text-slate-900 hover:bg-white shadow-xs"
+                      : "text-white/80 hover:text-white hover:bg-white/20"
+                  }`}
+                  title={soundMuted ? "Unmute Sound Effects" : "Mute Sound Effects"}
+                >
+                  {soundMuted ? (
+                    <VolumeX size={15} className="text-red-400" />
                   ) : (
-                    <motion.div
-                      key="moon"
-                      initial={{ rotate: 90, opacity: 0 }}
-                      animate={{ rotate: 0, opacity: 1 }}
-                      exit={{ rotate: -90, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <Moon size={16} />
-                    </motion.div>
+                    <Volume2
+                      size={15}
+                      className={isSolid ? "text-brand-orange" : "text-amber-300"}
+                    />
                   )}
-                </AnimatePresence>
-              </motion.button>
-              {/* Admin Button */}
+                </motion.button>
+
+                {/* Divider */}
+                <div
+                  className={`w-[1px] h-4 mx-0.5 ${
+                    isSolid ? "bg-slate-300" : "bg-white/20"
+                  }`}
+                />
+
+                {/* Ambient Background Music Toggle */}
+                <motion.button
+                  onClick={toggleAmbient}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all ${
+                    ambientPlaying
+                      ? "bg-gradient-to-tr from-brand-orange to-amber-500 text-white shadow-[0_0_10px_rgba(255,153,51,0.6)] animate-pulse"
+                      : isSolid
+                        ? "text-slate-600 hover:text-slate-900 hover:bg-white shadow-xs"
+                        : "text-white/80 hover:text-white hover:bg-white/20"
+                  }`}
+                  title={
+                    ambientPlaying ? "Pause Ambient Music" : "Play Civic Ambient Music"
+                  }
+                >
+                  <Music
+                    size={14}
+                    className={
+                      ambientPlaying
+                        ? "text-white"
+                        : isSolid
+                          ? "text-slate-600"
+                          : "text-white"
+                    }
+                  />
+                </motion.button>
+              </div>
+
+              {/* Admin Button (Always fits comfortably inside navbar) */}
               <Link
                 to="/admin/login"
-                className="hidden lg:inline-flex group relative items-center gap-2 overflow-hidden"
+                onMouseEnter={() => prefetchPath("/admin/login")}
+                onTouchStart={() => prefetchPath("/admin/login")}
+                className="shrink-0 group relative inline-flex items-center gap-1.5"
               >
                 <motion.div
-                  className="relative flex items-center gap-2 bg-gradient-to-r from-brand-orange via-orange-500 to-brand-green text-white font-black uppercase tracking-wider text-sm px-6 py-3 rounded-xl shadow-[0_10px_20px_rgba(255,153,51,0.3)] border border-orange-400"
-                  whileHover={{
-                    scale: 1.05,
-                    boxShadow: "0 15px 35px -5px rgba(255, 153, 51, 0.6)",
-                  }}
-                  whileTap={{ scale: 0.97 }}
+                  className="relative flex items-center gap-1.5 bg-gradient-to-r from-brand-orange via-orange-500 to-amber-500 text-white font-bold uppercase tracking-wider text-xs md:text-sm px-3 md:px-3.5 py-1.5 md:py-2 rounded-xl shadow-[0_4px_14px_rgba(255,153,51,0.35)] border border-orange-400/80"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.96 }}
                 >
                   {/* Shimmer effect */}
-                  <div className="absolute inset-0 rounded-xl overflow-hidden">
+                  <div className="absolute inset-0 rounded-xl overflow-hidden pointer-events-none">
                     <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/25 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
                   </div>
-                  <Shield className="w-4 h-4 relative z-10" />
-                  <span className="relative z-10">Admin</span>
-                  <ExternalLink className="w-3 h-3 relative z-10 opacity-60" />
+                  <Shield className="w-3.5 h-3.5 md:w-4 md:h-4 relative z-10" />
+                  <span className="relative z-10 whitespace-nowrap">Admin</span>
                 </motion.div>
               </Link>
 
@@ -383,6 +495,7 @@ const Navbar = () => {
           </div>
         </div>
 
+
         {/* Mobile Fullscreen Drawer */}
         <AnimatePresence>
           {isOpen && (
@@ -419,6 +532,8 @@ const Navbar = () => {
                     >
                       <NavLink
                         to={link.path}
+                        onMouseEnter={() => prefetchPath(link.path)}
+                        onTouchStart={() => prefetchPath(link.path)}
                         className={({ isActive }) =>
                           `flex items-center gap-3 px-4 py-2.5 text-[15px] font-semibold rounded-xl transition-all duration-200 ${
                             isActive
@@ -476,6 +591,61 @@ const Navbar = () => {
                   </button>
                 </motion.div>
 
+                {/* Sound Effects in mobile drawer */}
+                <motion.div
+                  className="p-4 pt-0 flex items-center justify-between"
+                  custom={navLinks.length + 1}
+                  variants={mobileItemVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">
+                    Sound Effects
+                  </span>
+                  <button
+                    onClick={toggleMute}
+                    className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold px-4 py-2 rounded-xl transition-all border border-slate-200"
+                  >
+                    {soundMuted ? (
+                      <>
+                        <VolumeX size={16} className="text-red-500" />
+                        <span>Muted</span>
+                      </>
+                    ) : (
+                      <>
+                        <Volume2 size={16} className="text-brand-orange" />
+                        <span>Enabled</span>
+                      </>
+                    )}
+                  </button>
+                </motion.div>
+
+                {/* Ambient Music in mobile drawer */}
+                <motion.div
+                  className="p-4 pt-0 flex items-center justify-between"
+                  custom={navLinks.length + 2}
+                  variants={mobileItemVariants}
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                >
+                  <span className="text-sm font-semibold text-slate-600 uppercase tracking-wide">
+                    Ambient Music
+                  </span>
+                  <button
+                    onClick={toggleAmbient}
+                    className={`flex items-center gap-2 font-bold px-4 py-2 rounded-xl transition-all border ${
+                      ambientPlaying
+                        ? "bg-brand-orange text-white border-brand-orange shadow-md shadow-brand-orange/30"
+                        : "bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200"
+                    }`}
+                  >
+                    <Music size={16} />
+                    <span>{ambientPlaying ? "Playing" : "Play"}</span>
+                  </button>
+                </motion.div>
+
                 {/* Admin Button in mobile */}
                 <motion.div
                   className="p-4 pt-0"
@@ -487,6 +657,8 @@ const Navbar = () => {
                 >
                   <Link
                     to="/admin/login"
+                    onMouseEnter={() => prefetchPath("/admin/login")}
+                    onTouchStart={() => prefetchPath("/admin/login")}
                     className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-primary via-orange-500 to-amber-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-primary/25 active:scale-[0.98] transition-transform"
                   >
                     <Shield className="w-4 h-4" />

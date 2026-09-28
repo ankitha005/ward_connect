@@ -14,7 +14,7 @@ export default function LoadingScreen({ onComplete }) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    // Progress bar from 0 to 100 over 1.3s
+    // Progress bar from 0 to 100 smoothly
     const progressTimer = setInterval(() => {
       setProgress((p) => {
         if (p >= 100) {
@@ -23,19 +23,19 @@ export default function LoadingScreen({ onComplete }) {
         }
         return p + 4;
       });
-    }, 50);
+    }, 45);
 
     // Cycle loading text
     const textTimer = setInterval(() => {
       setStepIdx((i) => Math.min(i + 1, LOADING_STEPS.length - 1));
     }, 280);
 
-    // Finish after 1.5s
+    // Complete in 1.4s
     const doneTimer = setTimeout(() => {
       clearInterval(progressTimer);
       clearInterval(textTimer);
       onComplete();
-    }, 1500);
+    }, 1400);
 
     return () => {
       clearInterval(progressTimer);
@@ -48,8 +48,10 @@ export default function LoadingScreen({ onComplete }) {
     <motion.div
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.05 }}
-      transition={{ duration: 0.5, ease: "easeInOut" }}
-      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[#0a0f1e]"
+      transition={{ duration: 0.3, ease: "easeInOut" }}
+      onClick={onComplete}
+      className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden bg-[#0a0f1e] cursor-pointer"
+      title="Click anywhere to skip"
     >
       {/* Animated background gradient orbs */}
       {/* Static gradient orbs — no animation, no GPU overhead */}
@@ -123,9 +125,9 @@ export default function LoadingScreen({ onComplete }) {
 
         {/* Brand Name */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.6 }}
+          transition={{ delay: 0.15, duration: 0.4 }}
           className="text-center"
         >
           <h1 className="text-4xl font-black text-white tracking-tight leading-none">
@@ -148,7 +150,7 @@ export default function LoadingScreen({ onComplete }) {
         <motion.div
           initial={{ scaleX: 0 }}
           animate={{ scaleX: 1 }}
-          transition={{ delay: 0.6, duration: 0.5 }}
+          transition={{ delay: 0.25, duration: 0.4 }}
           className="w-40 h-1 rounded-full overflow-hidden flex"
         >
           <div className="flex-1 bg-[#FF9933]" />
@@ -160,7 +162,7 @@ export default function LoadingScreen({ onComplete }) {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.7 }}
+          transition={{ delay: 0.3 }}
           className="w-full space-y-4"
         >
           {/* Status text */}
@@ -171,7 +173,7 @@ export default function LoadingScreen({ onComplete }) {
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.3 }}
+                transition={{ duration: 0.2 }}
                 className="text-center text-slate-400 text-xs font-mono"
               >
                 {LOADING_STEPS[stepIdx]}
@@ -215,7 +217,7 @@ export default function LoadingScreen({ onComplete }) {
       <motion.p
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
+        transition={{ delay: 0.35 }}
         className="absolute bottom-8 text-slate-600 text-xs font-medium tracking-widest uppercase"
       >
         Empowering Bengaluru's Citizens

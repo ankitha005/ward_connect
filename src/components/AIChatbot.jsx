@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import ReactMarkdown from "react-markdown";
 import { DIRECTORY_DATA } from "../data/directoryData";
+import { playNotification, playPop } from "../utils/soundEffects";
 
 const QUICK_QUERIES = [
   {
@@ -72,8 +73,15 @@ export default function AIChatbot() {
     if (isOpen) scrollToBottom();
   }, [messages, isOpen, isTyping]);
 
-  // Build a plain-text summary of the ward directory for AI context
-  const buildWardContext = () => {
+  // Client-side cache for 0ms instant replies on repeated queries
+  const aiCache = useRef(new Map());
+
+  // Build a concise summary of the ward directory ONLY when needed
+  const buildWardContext = (query = "") => {
+    const q = query.toLowerCase();
+    if (!/official|engineer|contact|phone|number|aee|corporator|directory/i.test(q)) {
+      return ""; // Skip sending massive context for general civic inquiries
+    }
     const groups = {};
     DIRECTORY_DATA.forEach((d) => {
       if (!groups[d.group]) groups[d.group] = [];
@@ -98,6 +106,11 @@ export default function AIChatbot() {
   };
 
   const fetchAiResponse = async (userQuery, currentHistory) => {
+    const cacheKey = userQuery.trim().toLowerCase();
+    if (aiCache.current.has(cacheKey)) {
+      return aiCache.current.get(cacheKey);
+    }
+
     try {
       const API_BASE = import.meta.env.VITE_API_URL || "http://localhost:4000";
       const res = await fetch(`${API_BASE}/api/chat`, {
@@ -105,18 +118,21 @@ export default function AIChatbot() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           prompt: userQuery,
-          history: currentHistory.slice(-6),
-          wardContext: buildWardContext(),
+          history: currentHistory.slice(-4),
+          wardContext: buildWardContext(userQuery),
         }),
       });
+
       if (res.ok) {
         const data = await res.json();
-        return data.response;
+        const reply = data.response || "";
+        aiCache.current.set(cacheKey, reply);
+        return reply;
       }
       return "🤖 **Sahaya Civic Assistant**:\nSorry, I could not connect to the municipal server. Please try again shortly or contact BBMP Sahaya at **1533**.";
     } catch (err) {
       console.error("Chat API Error:", err);
-      return "🤖 **Sahaya Civic Assistant**:\nI'm temporarily unable to reach the cloud AI. For urgent assistance, please dial:\n- **BBMP Control Room**: 1533\n- **Police Emergency**: 112\n- **BESCOM**: 1912\n- Or submit a grievance directly at [File New Complaint](/complaints).";
+      return "🤖 **Sahaya Civic Assistant**:\nFor immediate civic assistance:\n- **BBMP Control Room**: 1533\n- **Police Emergency**: 112\n- **BESCOM Electricity**: 1912\n- Or report directly at [File New Complaint](/complaints).";
     }
   };
 
@@ -139,18 +155,49 @@ export default function AIChatbot() {
 
     setIsTyping(true);
     const replyText = await fetchAiResponse(query, newMessages);
-    setMessages((prev) => [
-      ...prev,
-      {
-        sender: "ai",
-        text: replyText,
-        time: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      },
-    ]);
     setIsTyping(false);
+
+    // Fast typewriter streaming effect for snappy conversational feel
+    const aiMsgPlaceholder = {
+      sender: "ai",
+      text: "",
+      time: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+
+    setMessages((prev) => [...prev, aiMsgPlaceholder]);
+
+    // Stream out chunks quickly (in ~100-300ms total)
+    const chunkSize = Math.max(4, Math.floor(replyText.length / 20));
+    let currentIdx = 0;
+
+    const streamInterval = setInterval(() => {
+      currentIdx += chunkSize;
+      if (currentIdx >= replyText.length) {
+        clearInterval(streamInterval);
+        playNotification();
+        setMessages((prev) => {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            ...updated[updated.length - 1],
+            text: replyText,
+          };
+          return updated;
+        });
+      } else {
+        const currentText = replyText.slice(0, currentIdx);
+        setMessages((prev) => {
+          const updated = [...prev];
+          updated[updated.length - 1] = {
+            ...updated[updated.length - 1],
+            text: currentText,
+          };
+          return updated;
+        });
+      }
+    }, 15);
   };
 
   // Custom markdown link renderer to use SPA routing

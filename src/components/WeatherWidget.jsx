@@ -195,17 +195,17 @@ const WeatherWidget = () => {
         }`}
       >
         <div
-          className={`flex items-center gap-1.5 ${isOpen ? "" : "md:border-r md:border-slate-200 md:pr-3"}`}
+          className={`flex items-center gap-1.5 ${isOpen ? "" : "min-[1680px]:border-r min-[1680px]:border-slate-200 min-[1680px]:pr-2.5"}`}
         >
-          {getIcon(weatherData.condition)}
+          {getIcon(weatherData.condition, 16)}
           <span
-            className={`font-bold text-sm ${isOpen ? "text-white" : "text-slate-700"}`}
+            className={`font-bold text-xs sm:text-sm ${isOpen ? "text-white" : "text-slate-700"}`}
           >
             {weatherData.temp}°
           </span>
         </div>
         {!isOpen && (
-          <div className="hidden md:flex items-center gap-1.5">
+          <div className="hidden min-[1680px]:flex items-center gap-1.5">
             <span
               className={`w-1.5 h-1.5 rounded-full ${aqiInfo.color} animate-pulse`}
             />

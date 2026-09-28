@@ -441,10 +441,10 @@ const Home = () => {
                 link: "/schemes",
               },
               {
-                title: "Ward Projects",
-                desc: "Monitor construction & infrastructure progress live.",
-                icon: <Construction size={34} />,
-                link: "/projects",
+                title: "Ward Directory",
+                desc: "Direct contact numbers for 45+ BBMP officials and ward corporators.",
+                icon: <Phone size={34} />,
+                link: "/directory",
               },
               {
                 title: "Announcements",
