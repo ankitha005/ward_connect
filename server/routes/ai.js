@@ -5,10 +5,35 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 const router = express.Router();
 
 // Helper: Build comprehensive domain system prompt
-function buildSystemPrompt(wardContext) {
+function buildSystemPrompt(wardContext, language = "en") {
   const directorySection = wardContext
     ? `\n\n## OFFICIAL CONTACT DIRECTORY:\n${wardContext}\nWhen answering who to contact, ALWAYS cite specific names, designations, and mobile numbers from this directory.`
     : "";
+
+  if (language === "kn") {
+    return `ನೀವು "ಸಹಾಯ AI" (Sahaya AI), ಬೆಂಗಳೂರು ಮಹಾನಗರ ಪಾಲಿಕೆ ಹಾಗೂ ವಾರ್ಡ್ ಕನೆಕ್ಟ್ (Ward Connect) ಪೋರ್ಟಲ್‌ನ ಅಧಿಕೃತ, ಸಹಾನುಭೂತಿಪೂರ್ವಕ ಹಾಗೂ 24/7 ನಾಗರಿಕ ಕೃತಕ ಬುದ್ಧಿಮತ್ತೆ ಸಹಾಯಕ.
+ನಿಮ್ಮ ಕರ್ತವ್ಯ: ನಾಗರಿಕರಿಗೆ ಅವರ ವಾರ್ಡ್ ಸಮಸ್ಯೆಗಳು, ದೂರು ಸಲ್ಲಿಕೆ, ಅಧಿಕಾರಿಗಳ ಸಂಪರ್ಕ ಮತ್ತು ನಾಗರಿಕ ಸೇವೆಗಳ ಬಗ್ಗೆ ಸ್ಪಷ್ಟ, ಗೌರವಯುತ ಮತ್ತು ನಿಖರವಾದ ಕನ್ನಡದಲ್ಲಿ ಮಾಹಿತಿ ಒದಗಿಸುವುದು.
+
+ಪ್ರಮುಖ ಮಾಹಿತಿ:
+- ತುರ್ತು ಸಹಾಯವಾಣಿಗಳು: ಪೊಲೀಸ್: **112**, ಬಿಬಿಎಂಪಿ ನಿಯಂತ್ರಣ ಕೊಠಡಿ: **1533**, ಬೆಸ್ಕಾಂ (ವಿದ್ಯುತ್): **1912**, ಜಲಮಂಡಳಿ (ಕುಡಿಯುವ ನೀರು/ಒಳಚರಂಡಿ): **1916**, ಆಂಬ್ಯುಲೆನ್ಸ್: **108**, ಮಹಿಳಾ ಸಹಾಯವಾಣಿ: **1091**.
+- ಪೋರ್ಟಲ್ ಲಿಂಕ್‌ಗಳು:
+  * ಹೊಸ ದೂರು ದಾಖಲಿಸಲು: [ಹೊಸ ದೂರು ಸಲ್ಲಿಸಿ](/complaints)
+  * ದೂರಿನ ಸ್ಥಿತಿ ಪರಿಶೀಲಿಸಲು: [ದೂರು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ](/track)
+  * ವಾರ್ಡ್ ಅಧಿಕಾರಿಗಳ ವಿವರ: [ವಾರ್ಡ್ ಡೈರೆಕ್ಟರಿ](/directory)
+  * ಸರ್ಕಾರಿ ಯೋಜನೆಗಳು: [ಕಲ್ಯಾಣ ಯೋಜನೆಗಳು](/schemes)
+  * ವಾರ್ಡ್ ಸಮೀಕ್ಷೆ: [ಸಮೀಕ್ಷೆಯಲ್ಲಿ ಭಾಗವಹಿಸಿ](/survey)
+- ದೂರು ಪರಿಹಾರ ಸಮಯ (SLA):
+  * ರಸ್ತೆ ಗುಂಡಿ / ರಸ್ತೆ ದುರಸ್ತಿ: 48 ರಿಂದ 72 ಗಂಟೆಗಳು
+  * ಬೀದಿ ದೀಪ ದುರಸ್ತಿ: 24 ರಿಂದ 48 ಗಂಟೆಗಳು
+  * ಕಸ ಸಂಗ್ರಹಣೆ: ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ 6:30 ರಿಂದ 10:30 ರವರೆಗೆ. ಹಸಿ ಕಸ (ಹಸಿರು ಬುಟ್ಟಿ), ಒಣ ಕಸ (ನೀಲಿ ಬುಟ್ಟಿ).
+  * ನೀರು ಸರಬರಾಜು ಸಮಸ್ಯೆ / ಒಳಚರಂಡಿ ಬ್ಲಾಕ್: BWSSB 1916 ತುರ್ತು ಆದ್ಯತೆ.
+
+ಪ್ರಮುಖ ನಿಯಮಗಳು:
+1. ಸಂಪೂರ್ಣವಾಗಿ ಶುದ್ಧ ಹಾಗೂ ಸ್ಪಷ್ಟ ಕನ್ನಡದಲ್ಲಿ ಉತ್ತರಿಸಿ (Respond primarily in clear Kannada).
+2. ಅಗತ್ಯವಿದ್ದಲ್ಲಿ ತಾಂತ್ರಿಕ ಪದಗಳನ್ನು ಸರಳ ಕನ್ನಡದಲ್ಲಿ ಬರೆಯಿರಿ (ಉದಾ: ರಸ್ತೆ ಗುಂಡಿ, ಬೀದಿ ದೀಪ, ಕಸ ವಿಲೇವಾರಿ).
+3. ಬಳಕೆದಾರರಿಗೆ ನೇರವಾಗಿ ಪೋರ್ಟಲ್ ಲಿಂಕ್‌ಗಳನ್ನು ನೀಡಿ (ಉದಾಹರಣೆಗೆ: [ಹೊಸ ದೂರು ಸಲ್ಲಿಸಿ](/complaints)).
+4. ಸೌಜನ್ಯದಿಂದ ಮತ್ತು ಸಂಕ್ಷಿಪ್ತವಾಗಿ (200 ಪದಗಳ ಒಳಗೆ) ಉತ್ತರಿಸಿ.${directorySection}`;
+  }
 
   return `You are "Sahaya AI", an expert, empathetic, and 24/7 Civic Assistant for the Bengaluru Municipal Corporation & Ward Connect portal (ADDA_360).
 Your mission is to provide accurate, authoritative, and actionable civic assistance to citizens in English and Kannada.
@@ -35,27 +60,127 @@ KEY KNOWLEDGE BASE:
 RESPONSE GUIDELINES:
 1. Be structured, polite, and direct. Use **bolding**, lists, and clear steps.
 2. If the user mentions a specific problem (e.g. pothole, broken streetlight, garbage dump), immediately suggest filing a complaint with the link [File New Complaint](/complaints) and provide the relevant helpline/official.
-3. Understand Kannada or "Kanglish" queries and reply in Kannada or bilingual if addressed in Kannada.
-4. Keep answers under 250 words, fast to read on mobile.${directorySection}`;
+3. Keep answers under 250 words, fast to read on mobile.${directorySection}`;
 }
 
 // Smart Local Fallback Engine if cloud AI is unavailable or rate-limited
-function getLocalCivicResponse(prompt, wardContext) {
+function getLocalCivicResponse(prompt, wardContext, language = "en") {
   const p = (prompt || "").toLowerCase();
+  const isKn = language === "kn" || /[\u0C80-\u0CFF]|ನಮಸ್ಕಾರ|ದೂರು|ಗುಂಡಿ|ರಸ್ತೆ|ಕಸ|ನೀರು|ವಿದ್ಯುತ್|ಬೆಸ್ಕಾಂ|ಅಧಿಕಾರಿ|ಹೇಗೆ/i.test(prompt);
 
-  // Kannada language query support
-  if (/ನಮಸ್ಕಾರ|ಹಲೋ|ದೂರು|ಗುಂಡಿ|ರಸ್ತೆ|ಕಸ|ನೀರು|ವಿದ್ಯುತ್|ಬೆಸ್ಕಾಂ|ಅಧಿಕಾರಿ/i.test(prompt)) {
-    return `🙏 **ನಮಸ್ಕಾರ! ಸಹಾಯ ನಾಗರಿಕ ಸಹಾಯವಾಣಿಗೆ ಸ್ವಾಗತ (Sahaya AI).**
+  // 1. Kannada Language Engine
+  if (isKn) {
+    if (/ನಮಸ್ಕಾರ|ಹಲೋ|ಶುಭೋದಯ|ಹಾಯ್|ನಮಸ್ತೆ/i.test(p) || p.length < 15) {
+      return `🙏 **ನಮಸ್ಕಾರ! ಸಹಾಯ AI (Sahaya AI) ನಾಗರಿಕ ಸೇವಾ ಕೇಂದ್ರಕ್ಕೆ ಸ್ವಾಗತ.**
 
-ನಾನು ನಿಮ್ಮ ವಾರ್ಡ್‌ನ ನಾಗರಿಕ ಸಮಸ್ಯೆಗಳಿಗೆ ನೆರವಾಗಬಲ್ಲೆ:
-- 🛣️ **ರಸ್ತೆ ಗುಂಡಿ ಅಥವಾ ಕಾಲುದಾರಿ ದೂರು**: **[ಹೊಸ ದೂರು ದಾಖಲಿಸಿ](/complaints)**
-- 🔍 **ನಿಮ್ಮ ದೂರಿನ ಸ್ಥಿತಿ ತಿಳಿಯಿರಿ**: **[ದೂರು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ](/track)**
-- 📞 **ವಾರ್ಡ್ ಇಂಜಿನಿಯರ್ ಹಾಗೂ ಅಧಿಕಾರಿಗಳ ಸಂಪರ್ಕ**: **[ಅಧಿಕಾರಿಗಳ ವಿವರ](/directory)**
-- 🚨 **ತುರ್ತು ಸಹಾಯವಾಣಿಗಳು**: ಪೊಲೀಸ್ (**112**), ಬೆಸ್ಕಾಂ ವಿದ್ಯುತ್ (**1912**), ಜಲಮಂಡಳಿ ನೀರು (**1916**), ಬಿಬಿಎಂಪಿ (**1533**).
+ನಾನು ನಿಮ್ಮ ವಾರ್ಡ್‌ನ ಸಮಸ್ಯೆಗಳನ್ನು ಶೀಘ್ರವಾಗಿ ಬಗೆಹರಿಸಲು ಸದಾ ಸಿದ್ಧನಾಗಿದ್ದೇನೆ:
+- 🛣️ **ರಸ್ತೆ ಗುಂಡಿ ಅಥವಾ ದುರಸ್ತಿ**: [ಹೊಸ ದೂರು ದಾಖಲಿಸಿ](/complaints)
+- 🔍 **ದೂರಿನ ಪ್ರಸ್ತುತ ಸ್ಥಿತಿ ತಿಳಿಯಿರಿ**: [ದೂರು ಟ್ರ್ಯಾಕ್ ಮಾಡಿ](/track)
+- 📞 **ವಾರ್ಡ್ ಇಂಜಿನಿಯರ್‌ಗಳು ಮತ್ತು ಅಧಿಕಾರಿಗಳು**: [ಅಧಿಕಾರಿಗಳ ವಿವರ ನೋಡಿ](/directory)
+- 💧 **ಕುಡಿಯುವ ನೀರು ಮತ್ತು ವಿದ್ಯುತ್ ಸಹಾಯವಾಣಿ**: ಜಲಮಂಡಳಿ (**1916**), ಬೆಸ್ಕಾಂ (**1912**)
+- 📜 **ಸರ್ಕಾರಿ ಗ್ಯಾರಂಟಿ ಮತ್ತು ಕಲ್ಯಾಣ ಯೋಜನೆಗಳು**: [ಯೋಜನೆಗಳ ವಿವರ](/schemes)
 
-ನಿಮಗೆ ಯಾವ ವಿಷಯದಲ್ಲಿ ಸಹಾಯ ಬೇಕು?`;
+ನಿಮಗೆ ಯಾವ ವಿಷಯದಲ್ಲಿ ಸಹಾಯ ಬೇಕು? ದಯವಿಟ್ಟು ಕೇಳಿ!`;
+    }
+
+    if (/ಗುಂಡಿ|ರಸ್ತೆ|ಫುಟ್‌ಪಾತ್|ಡಾಂಬರು|ಕಾಲುದಾರಿ|ಹಾಳಾಗಿದೆ|ಹೊಂಡ/i.test(p)) {
+      return `🛣️ **ರಸ್ತೆ ಮತ್ತು ಗುಂಡಿ ದುರಸ್ತಿ ಸೇವೆ (Road & Pothole Service)**
+
+1. **ಆನ್‌ಲೈನ್ ದೂರು ಸಲ್ಲಿಸಿ**: ನಿಮ್ಮ ಮೊಬೈಲ್‌ನಿಂದ ಜಿಪಿಎಸ್ ಲೊಕೇಶನ್ ಮತ್ತು ಫೋಟೋ ಸಹಿತ ದೂರು ದಾಖಲಿಸಿ:
+   👉 **[ಹೊಸ ದೂರು ದಾಖಲಿಸಿ](/complaints)**
+2. **ಪರಿಹಾರದ ಕಾಲಮಿತಿ (SLA)**: ಬಿಬಿಎಂಪಿ ನಿಯಮಾವಳಿ ಪ್ರಕಾರ ರಸ್ತೆ ಗುಂಡಿಗಳನ್ನು **48 ರಿಂದ 72 ಗಂಟೆಗಳಲ್ಲಿ** ದುರಸ್ತಿ ಮಾಡಲಾಗುತ್ತದೆ.
+3. **ಸಂಬಂಧಪಟ್ಟ ಅಧಿಕಾರಿ**: ವಾರ್ಡ್ ಸಹಾಯಕ ಕಾರ್ಯಪಾಲಕ ಇಂಜಿನಿಯರ್ (AEE).
+4. **ಬಿಬಿಎಂಪಿ ಸಹಾಯವಾಣಿ**: ತುರ್ತು ಸಂದರ್ಭದಲ್ಲಿ **1533** ಅಥವಾ **080-22660000** ಗೆ ಕರೆ ಮಾಡಿ.`;
+    }
+
+    if (/ಕಸ|ಸ್ವಚ್ಛತೆ|ತ್ಯಾಜ್ಯ|ಕಸದ ಗಾಡಿ|ಪೌರಕಾರ್ಮಿಕ|ವಾಸನೆ|ಡಂಪ್|ಕಸದ ತೊಟ್ಟಿ/i.test(p)) {
+      return `🗑️ **ಕಸ ವಿಲೇವಾರಿ ಮತ್ತು ನೈರ್ಮಲ್ಯ ಸೇವೆಗಳು (Solid Waste Management)**
+
+- **ಮನೆ ಮನೆ ಕಸ ಸಂಗ್ರಹಣೆ ಸಮಯ**: ಪ್ರತಿದಿನ ಬೆಳಿಗ್ಗೆ **6:30 ರಿಂದ 10:30 ರವರೆಗೆ**.
+- **ಕಸ ವಿಂಗಡಣೆ ಕಡ್ಡಾಯ**:
+  * 🟢 **ಹಸಿರು ಬುಟ್ಟಿ**: ಹಸಿ ಕಸ (ಅಡುಗೆ ಮನೆ ತ್ಯಾಜ್ಯ, ತರಕಾರಿ ಸಿಪ್ಪೆ).
+  * 🔵 **ನೀಲಿ ಬುಟ್ಟಿ**: ಒಣ ಕಸ (ಪ್ಲಾಸ್ಟಿಕ್, ಕಾಗದ, ಗಾಜು).
+  * 🔴 **ಪ್ರತ್ಯೇಕ ಹೊದಿಕೆ**: ಸ್ಯಾನಿಟರಿ ಮತ್ತು ಅಪಾಯಕಾರಿ ತ್ಯಾಜ್ಯ.
+- **ಕಸದ ರಾಶಿ ವರದಿ ಮಾಡಲು**: ಫೋಟೋ ತೆಗೆದು ದೂರು ಸಲ್ಲಿಸಿ:
+   👉 **[ಇಲ್ಲಿ ದೂರು ದಾಖಲಿಸಿ](/complaints)**
+- **ಆರೋಗ್ಯ ನಿರೀಕ್ಷಕರ ಸಂಪರ್ಕ**: ಹಿರಿಯ ಆರೋಗ್ಯ ನಿರೀಕ್ಷಕರ (Senior Health Inspector) ವಿವರ ಪಡೆಯಲು:
+   👉 **[ವಾರ್ಡ್ ಅಧಿಕಾರಿಗಳ ಪಟ್ಟಿ](/directory)**`;
+    }
+
+    if (/ನೀರು|ಕಾವೇರಿ|ಜಲಮಂಡಳಿ|ಒಳಚರಂಡಿ|ಪೈಪ್|ಸೋರಿಕೆ|ಮ್ಯಾನ್‌ಹೋಲ್|ಕಲುಷಿತ/i.test(p)) {
+      return `💧 **ಕುಡಿಯುವ ನೀರು ಮತ್ತು ಒಳಚರಂಡಿ ಸೇವೆ (BWSSB Assistance)**
+
+- **ಜಲಮಂಡಳಿ 24/7 ಸಹಾಯವಾಣಿ**: ಯಾವುದೇ ನೀರು ಸರಬರಾಜು ವ್ಯತ್ಯಯ ಅಥವಾ ಪೈಪ್ ಸೋರಿಕೆಗೆ ತಕ್ಷಣ **1916** ಗೆ ಕರೆ ಮಾಡಿ.
+- **ಒಳಚರಂಡಿ ಉಕ್ಕಿ ಹರಿಯುವುದು / ಮ್ಯಾನ್‌ಹೋಲ್ ಸಮಸ್ಯೆ**: ತುರ್ತು ಪರಿಹಾರಕ್ಕಾಗಿ ಫೋಟೋ ಸಹಿತ ದೂರು ದಾಖಲಿಸಿ:
+   👉 **[ಜಲಮಂಡಳಿ ದೂರು ಸಲ್ಲಿಸಿ](/complaints)**
+- **ವಾರ್ಡ್ ನೀರು ಸರಬರಾಜು ಇಂಜಿನಿಯರ್**: ನೇರ ಸಂಪರ್ಕ ಸಂಖ್ಯೆ ಪಡೆಯಲು:
+   👉 **[ಅಧಿಕಾರಿಗಳ ಡೈರೆಕ್ಟರಿ](/directory)**`;
+    }
+
+    if (/ಬೆಳಕು|ದೀಪ|ಬೀದಿ ದೀಪ|ವಿದ್ಯುತ್|ಕರೆಂಟ್|ಬೆಸ್ಕಾಂ|ಟ್ರಾನ್ಸ್‌ಫಾರ್ಮರ್|ವೈರ್|ಕತ್ತಲೆ/i.test(p)) {
+      return `💡 **ಬೀದಿ ದೀಪ ಮತ್ತು ಬೆಸ್ಕಾಂ ವಿದ್ಯುತ್ ಸೇವೆಗಳು (BESCOM & Streetlights)**
+
+- **ಬೆಸ್ಕಾಂ ತುರ್ತು ಸಹಾಯವಾಣಿ**: ವಿದ್ಯುತ್ ಕಡಿತ ಅಥವಾ ಅಪಾಯಕಾರಿ ತಂತಿಗಳ ಬಗ್ಗೆ **1912** ಗೆ ಕರೆ ಮಾಡಿ ಅಥವಾ ವಾಟ್ಸಾಪ್ **9449844640** ಗೆ ಸಂದೇಶ ಕಳುಹಿಸಿ.
+- **ಹಾಳಾದ ಬೀದಿ ದೀಪಗಳ ವರದಿ**: ನಿಮ್ಮ ರಸ್ತೆಯ ಕಂಬದ ವಿವರ ನೀಡಿ ದೂರು ದಾಖಲಿಸಿ:
+   👉 **[ಬೀದಿ ದೀಪ ದೂರು ಸಲ್ಲಿಸಿ](/complaints)** *(24 ರಿಂದ 48 ಗಂಟೆಗಳಲ್ಲಿ ದುರಸ್ತಿ)*.
+- **ವಾರ್ಡ್ ಎಲೆಕ್ಟ್ರಿಕಲ್ ಸಿಬ್ಬಂದಿ**: ಸಂಪರ್ಕ ವಿವರಗಳನ್ನು **[ವಾರ್ಡ್ ಡೈರೆಕ್ಟರಿ](/directory)** ನಲ್ಲಿ ಪರಿಶೀಲಿಸಿ.`;
+    }
+
+    if (/ಅಧಿಕಾರಿ|ಇಂಜಿನಿಯರ್|ಕಾರ್ಪೊರೇಟರ್|ಶಾಸಕ|ಸಂಪರ್ಕ|ನಂಬರ್|ಫೋನ್/i.test(p)) {
+      return `📞 **ವಾರ್ಡ್ ಅಧಿಕಾರಿಗಳು ಮತ್ತು ಪ್ರತಿನಿಧಿಗಳ ಸಂಪರ್ಕ ವಿವರ**
+
+ನಿಮ್ಮ ವಾರ್ಡ್‌ನ ಕಾರ್ಯನಿರ್ವಾಹಕ ಇಂಜಿನಿಯರ್‌ಗಳು, ಆರೋಗ್ಯ ನಿರೀಕ್ಷಕರು ಹಾಗೂ ಚುನಾಯಿತ ಪ್ರತಿನಿಧಿಗಳ ಸಂಪೂರ್ಣ ಪಟ್ಟಿ ಇಲ್ಲಿದೆ:
+👉 **[ವಾರ್ಡ್ ಅಧಿಕಾರಿಗಳ ಡೈರೆಕ್ಟರಿ ನೋಡಿ](/directory)**
+
+ಪ್ರಮುಖ ಸಂಖ್ಯೆಗಳು:
+- **ಬಿಬಿಎಂಪಿ ಕಂಟ್ರೋಲ್ ರೂಂ**: **1533** / **080-22660000**
+- **ಟ್ರಾಫಿಕ್ ಪೊಲೀಸ್**: **103** / **080-22943030**
+- **ತುರ್ತು ಪೊಲೀಸ್**: **112**`;
+    }
+
+    if (/ಟ್ರ್ಯಾಕ್|ಸ್ಥಿತಿ|ದೂರಿನ ಸಂಖ್ಯೆ|ನನ್ನ ದೂರು|ಎಲ್ಲಿದೆ|ಸ್ಟೇಟಸ್/i.test(p)) {
+      return `🔍 **ನಿಮ್ಮ ದೂರಿನ ಪ್ರಸ್ತುತ ಸ್ಥಿತಿ ಪರಿಶೀಲಿಸಿ (Track Complaint)**
+
+ನಿಮ್ಮ ದೂರಿನ ಟಿಕೆಟ್ ಐಡಿ (ಉದಾ: \`CHA-2026-...\`) ಅಥವಾ ನೋಂದಾಯಿತ 10-ಅಂಕಿಯ ಮೊಬೈಲ್ ಸಂಖ್ಯೆಯನ್ನು ನಮೂದಿಸಿ ನೇರ ಸ್ಥಿತಿ ಪರಿಶೀಲಿಸಿ:
+👉 **[ದೂರು ಟ್ರ್ಯಾಕ್ ಪುಟಕ್ಕೆ ಹೋಗಿ](/track)**
+
+ಅಧಿಕಾರಿಗಳು ಅಪ್‌ಲೋಡ್ ಮಾಡಿದ ಪರಿಹಾರದ ಫೋಟೋ ಹಾಗೂ ಟಿಪ್ಪಣಿಗಳನ್ನು ಅಲ್ಲಿ ವೀಕ್ಷಿಸಬಹುದು.`;
+    }
+
+    if (/ಯೋಜನೆ|ಗ್ಯಾರಂಟಿ|ಗೃಹಜ್ಯೋತಿ|ಗೃಹಲಕ್ಷ್ಮಿ|ಶಕ್ತಿ|ಯುವನಿಧಿ|ಸಹಾಯಧನ|ಸರ್ಕಾರ/i.test(p)) {
+      return `📜 **ಕರ್ನಾಟಕ ಸರ್ಕಾರದ ಗ್ಯಾರಂಟಿ ಮತ್ತು ಕಲ್ಯಾಣ ಯೋಜನೆಗಳು**
+
+ನಾಗರಿಕರಿಗೆ ಲಭ್ಯವಿರುವ ಪ್ರಮುಖ ಯೋಜನೆಗಳ ಮಾಹಿತಿ:
+- **ಗೃಹ ಜ್ಯೋತಿ**: 200 ಯೂನಿಟ್‌ವರೆಗೆ ಉಚಿತ ವಿದ್ಯುತ್.
+- **ಗೃಹ ಲಕ್ಷ್ಮಿ**: ಮನೆಯೊಡತಿಗೆ ಪ್ರತಿ ತಿಂಗಳು ₹2,000 ಆರ್ಥಿಕ ನೆರವು.
+- **ಶಕ್ತಿ ಯೋಜನೆ**: ಮಹಿಳೆಯರಿಗೆ ಸರ್ಕಾರಿ ಬಸ್‌ಗಳಲ್ಲಿ ಉಚಿತ ಪ್ರಯಾಣ.
+- **ಯುವ ನಿಧಿ**: ನಿರುದ್ಯೋಗಿ ಪದವೀಧರರಿಗೆ ಮಾಸಿಕ ಭತ್ಯೆ.
+- **ಪ್ರಧಾನಮಂತ್ರಿ ಆವಾಸ್ ಯೋಜನೆ (PMAY)**: ಮನೆ ನಿರ್ಮಾಣಕ್ಕೆ ಗರಿಷ್ಠ ₹2.67 ಲಕ್ಷ ಸಬ್ಸಿಡಿ.
+
+ಹೆಚ್ಚಿನ ವಿವರ ಮತ್ತು ಅರ್ಜಿ ಸಲ್ಲಿಸುವ ಲಿಂಕ್‌ಗಳಿಗಾಗಿ:
+👉 **[ಕಲ್ಯಾಣ ಯೋಜನೆಗಳ ಪೋರ್ಟಲ್](/schemes)**`;
+    }
+
+    if (/ತುರ್ತು|ಆಂಬ್ಯುಲೆನ್ಸ್|ಪೊಲೀಸ್|ಅಪಘಾತ|ಬೆಂಕಿ|ಅಗ್ನಿಶಾಮಕ/i.test(p)) {
+      return `🚨 **ಬೆಂಗಳೂರು ತುರ್ತು ಸಹಾಯವಾಣಿ ಸಂಖ್ಯೆಗಳು**
+
+- 🚓 **ಪೊಲೀಸ್ ತುರ್ತು ಸೇವೆ**: **112**
+- 🚑 **ಆಂಬ್ಯುಲೆನ್ಸ್ (ವೈದ್ಯಕೀಯ)**: **108**
+- 🚒 **ಅಗ್ನಿಶಾಮಕ ದಳ**: **101**
+- 👩 **ಮಹಿಳಾ ಸುರಕ್ಷತಾ ಸಹಾಯವಾಣಿ**: **1091**
+- 👵 **ಹಿರಿಯ ನಾಗರಿಕರ ಸಹಾಯವಾಣಿ**: **1090**
+- 🏢 **ಬಿಬಿಎಂಪಿ ವಿಪತ್ತು ನಿರ್ವಹಣೆ**: **080-22221188** / **1533**`;
+    }
+
+    return `🙏 **ಸಹಾಯ AI ನಾಗರಿಕ ಸಹಾಯಕ**
+
+ನಿಮ್ಮ ಪ್ರಶ್ನೆಗೆ ಧನ್ಯವಾದಗಳು. ನಿಮ್ಮ ವಾರ್ಡ್‌ನ ಯಾವುದೇ ಸಮಸ್ಯೆಗೆ ತ್ವರಿತ ಪರಿಹಾರ ಪಡೆಯಲು:
+- 📝 ಅಧಿಕೃತವಾಗಿ ಪರಿಶೀಲನೆಗೆ ಒಳಪಡಿಸಲು **[ಹೊಸ ದೂರು ದಾಖಲಿಸಿ](/complaints)**.
+- 📞 ನಿಮ್ಮ ವಾರ್ಡ್ ಇಂಜಿನಿಯರ್‌ಗಳ ನೇರ ಸಂಪರ್ಕಕ್ಕಾಗಿ **[ವಾರ್ಡ್ ಡೈರೆಕ್ಟರಿ](/directory)** ವೀಕ್ಷಿಸಿ.
+- 🚨 ತಕ್ಷಣದ ತುರ್ತು ಸಹಾಯಕ್ಕಾಗಿ ಬಿಬಿಎಂಪಿ **1533** ಅಥವಾ ಪೊಲೀಸ್ **112** ಗೆ ಕರೆ ಮಾಡಿ.`;
   }
 
+  // 2. English Language Engine
   if (/hi|hello|hey|namaste|namaskara/i.test(p) && p.length < 35) {
     return `👋 **Namaskara! I am Sahaya AI, your 24/7 Civic Assistant.**
 
@@ -124,7 +249,7 @@ Key BBMP numbers:
 You can check real-time progress, official resolution notes, and before-and-after photo verification at:
 👉 **[Go to Track Complaint Page](/track)**
 
-Enter your Complaint Tracking ID (e.g. \`CHM-2026-...\`) or your registered 10-digit mobile number.`;
+Enter your Complaint Tracking ID (e.g. \`CHA-2026-...\`) or your registered 10-digit mobile number.`;
   }
 
   if (/scheme|subsidy|gruha|shakti|yuvonidhi|kalyana|bjp|government|pmay/i.test(p)) {
@@ -171,7 +296,7 @@ const withTimeout = (promise, ms = 2500) =>
 // POST /api/chat
 router.post("/", async (req, res) => {
   try {
-    const { prompt, wardContext, history = [] } = req.body;
+    const { prompt, wardContext, history = [], language = "en" } = req.body;
 
     if (!prompt || typeof prompt !== "string") {
       return res.status(400).json({ error: "Prompt is required" });
@@ -180,18 +305,22 @@ router.post("/", async (req, res) => {
     const trimmedPrompt = prompt.trim();
     const pLower = trimmedPrompt.toLowerCase();
 
+    // Determine target language (explicit or detected Kannada script)
+    const effectiveLang =
+      language === "kn" || /[\u0C80-\u0CFF]/.test(trimmedPrompt) ? "kn" : "en";
+
     // Fast-path: Instant matching for common civic patterns (< 10ms)
-    const isCivicPattern = /^(hi|hello|hey|namaskara|namaste)$|pothole|garbage|waste|water|sewage|drain|bescom|streetlight|official|engineer|track|status|scheme|subsidy|emergency|ambulance|police|ನಮಸ್ಕಾರ/i.test(
+    const isCivicPattern = /^(hi|hello|hey|namaskara|namaste)$|pothole|garbage|waste|water|sewage|drain|bescom|streetlight|official|engineer|track|status|scheme|subsidy|emergency|ambulance|police|ನಮಸ್ಕಾರ|ಗುಂಡಿ|ರಸ್ತೆ|ಕಸ|ನೀರು|ದೀಪ|ಅಧಿಕಾರಿ|ಯೋಜನೆ|ತುರ್ತು/i.test(
       pLower
     );
 
     // If query matches a known pattern or is a simple greeting, return instantly without network lag
-    if (isCivicPattern && trimmedPrompt.length < 80) {
-      const fastResponse = getLocalCivicResponse(trimmedPrompt, wardContext);
-      return res.json({ response: fastResponse, provider: "instant-civic-engine" });
+    if (isCivicPattern && trimmedPrompt.length < 90) {
+      const fastResponse = getLocalCivicResponse(trimmedPrompt, wardContext, effectiveLang);
+      return res.json({ response: fastResponse, provider: "instant-civic-engine", language: effectiveLang });
     }
 
-    const systemPrompt = buildSystemPrompt(wardContext);
+    const systemPrompt = buildSystemPrompt(wardContext, effectiveLang);
 
     // Tier 1: Google Gemini (if key present)
     if (
@@ -219,7 +348,7 @@ router.post("/", async (req, res) => {
         const reply = result.response.text();
 
         if (reply && reply.trim()) {
-          return res.json({ response: reply.trim(), provider: "gemini" });
+          return res.json({ response: reply.trim(), provider: "gemini", language: effectiveLang });
         }
       } catch (geminiErr) {
         console.warn("Gemini API error, falling back:", geminiErr.message);
@@ -234,11 +363,15 @@ router.post("/", async (req, res) => {
     ) {
       try {
         const hf = new HfInference(process.env.HF_TOKEN);
+        const langInstruction =
+          effectiveLang === "kn"
+            ? "You are Sahaya AI. Respond in clear, polite Kannada language."
+            : "You are Sahaya AI, Bengaluru Municipal Civic Assistant. Keep responses concise, helpful, and under 150 words.";
+
         const messages = [
           {
             role: "system",
-            content:
-              "You are Sahaya AI, Bengaluru Municipal Civic Assistant. Keep responses concise, helpful, and under 150 words.",
+            content: langInstruction,
           },
         ];
 
@@ -258,14 +391,14 @@ router.post("/", async (req, res) => {
         const responsePromise = hf.chatCompletion({
           model: "Qwen/Qwen2.5-72B-Instruct",
           messages,
-          max_tokens: 220,
+          max_tokens: 250,
           temperature: 0.7,
         });
 
         const response = await withTimeout(responsePromise, 2500);
         const reply = response.choices?.[0]?.message?.content;
         if (reply && reply.trim()) {
-          return res.json({ response: reply.trim(), provider: "huggingface" });
+          return res.json({ response: reply.trim(), provider: "huggingface", language: effectiveLang });
         }
       } catch (hfErr) {
         console.warn("HuggingFace timeout/error, using instant civic engine:", hfErr.message);
@@ -273,12 +406,12 @@ router.post("/", async (req, res) => {
     }
 
     // Tier 3: Local Civic Knowledge Engine (Zero-fail, instant response)
-    const fallbackResponse = getLocalCivicResponse(trimmedPrompt, wardContext);
-    return res.json({ response: fallbackResponse, provider: "local-civic-engine" });
+    const fallbackResponse = getLocalCivicResponse(trimmedPrompt, wardContext, effectiveLang);
+    return res.json({ response: fallbackResponse, provider: "local-civic-engine", language: effectiveLang });
   } catch (err) {
     console.error("AI chat general error:", err);
     return res.json({
-      response: getLocalCivicResponse(req.body?.prompt, req.body?.wardContext),
+      response: getLocalCivicResponse(req.body?.prompt, req.body?.wardContext, req.body?.language || "en"),
       provider: "local-fallback",
     });
   }
