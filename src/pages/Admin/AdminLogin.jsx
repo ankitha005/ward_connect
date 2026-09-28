@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Lock,
@@ -8,258 +8,361 @@ import {
   EyeOff,
   AlertCircle,
   ShieldCheck,
+  ArrowLeft,
+  CheckCircle2,
+  Sparkles,
+  KeyRound,
+  ShieldAlert,
+  Loader2,
 } from "lucide-react";
 import useComplaintsStore from "../../store/complaintsStore";
 import logo from "../../assets/logo.svg";
-
-/* ─── Logo Fill Loading Component ─── */
-function LogoFillLoader() {
-  return (
-    <div className="flex flex-col items-center justify-center gap-6 py-4">
-      <div className="relative w-24 h-24 flex items-center justify-center">
-        {/* dim base logo */}
-        <img
-          src={logo}
-          alt=""
-          className="absolute inset-0 w-full h-full object-contain opacity-15"
-        />
-        {/* animated fill overlay using clip-path */}
-        <img
-          src={logo}
-          alt="Loading…"
-          className="absolute inset-0 w-full h-full object-contain logo-fill-anim"
-        />
-        {/* orange glow ring */}
-        <div className="absolute inset-0 rounded-full border-2 border-primary/30 animate-ping" />
-      </div>
-      <div className="text-center">
-        <p className="text-dark font-bold text-base">Verifying Credentials</p>
-        <p className="text-slate-400 text-xs mt-1 font-medium">
-          Opening secure portal…
-        </p>
-      </div>
-      {/* progress bar */}
-      <div className="w-48 h-1 bg-slate-100 rounded-full overflow-hidden">
-        <div className="h-full bg-primary rounded-full logo-progress-anim" />
-      </div>
-    </div>
-  );
-}
+import { playNotification, playPop, playClick } from "../../utils/soundEffects";
 
 export default function AdminLogin() {
   const { adminLogin, isAdminLoggedIn } = useComplaintsStore();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ username: "", password: "" });
+  const location = useLocation();
+
+  const [form, setForm] = useState({
+    username: localStorage.getItem("remembered_admin_user") || "admin",
+    password: "",
+  });
+  const [rememberMe, setRememberMe] = useState(true);
   const [showPw, setShowPw] = useState(false);
+  const [capsLockOn, setCapsLockOn] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const [loggedOutNotice, setLoggedOutNotice] = useState(false);
 
-  // If already logged in with a valid token, redirect immediately to dashboard
+  // Check if redirected from sign out
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    if (params.get("loggedOut") === "true") {
+      setLoggedOutNotice(true);
+      const timer = setTimeout(() => setLoggedOutNotice(false), 6000);
+      return () => clearTimeout(timer);
+    }
+  }, [location.search]);
+
+  // If already logged in, redirect straight to dashboard
   useEffect(() => {
     const token = localStorage.getItem("adminToken");
-    if (isAdminLoggedIn && token) {
+    if (isAdminLoggedIn && token && !loginSuccess) {
       navigate("/admin/dashboard", { replace: true });
     }
-  }, [isAdminLoggedIn, navigate]);
+  }, [isAdminLoggedIn, navigate, loginSuccess]);
 
-  const handle = async (e) => {
+  // Caps lock detection
+  const handleKeyDown = (e) => {
+    if (e.getModifierState) {
+      setCapsLockOn(e.getModifierState("CapsLock"));
+    }
+  };
+
+  const handleQuickFill = () => {
+    playPop();
+    setForm({ username: "admin", password: "bjpward@2026" });
+    setError("");
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!form.username.trim() || !form.password.trim()) {
+      setError("Please enter both username and password.");
+      return;
+    }
+
     setError("");
     setLoading(true);
+    playClick();
+
     try {
-      const ok = await adminLogin(form.username, form.password);
-      if (ok) {
-        navigate("/admin/dashboard", { replace: true });
+      const res = await adminLogin(form.username, form.password);
+      if (res && res.success) {
+        if (rememberMe) {
+          localStorage.setItem("remembered_admin_user", form.username.trim());
+        } else {
+          localStorage.removeItem("remembered_admin_user");
+        }
+
+        setLoginSuccess(true);
+        playNotification();
+        setTimeout(() => {
+          navigate("/admin/dashboard", { replace: true });
+        }, 1100);
       } else {
-        setError("Invalid username or password. Please try again.");
+        setError(res?.message || "Invalid username or password. Please try again.");
       }
+    } catch (err) {
+      setError("Network or server connection failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-dark flex items-center justify-center px-4 overflow-hidden">
-      {/* Rich background */}
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_60%_at_50%_-20%,rgba(255,107,0,0.18),transparent)]" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_50%_50%_at_80%_80%,rgba(59,130,246,0.08),transparent)]" />
-        {/* subtle grid */}
+    <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center px-4 py-8 relative overflow-hidden font-sans">
+      {/* Dynamic Background Glows */}
+      <div className="absolute inset-0 pointer-events-none">
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-r from-orange-600/20 via-brand-orange/15 to-amber-500/20 rounded-full blur-[120px]" />
+        <div className="absolute bottom-10 right-10 w-[400px] h-[300px] bg-emerald-600/10 rounded-full blur-[100px]" />
+        {/* Subtle geometric dot grid */}
         <div
-          className="absolute inset-0 opacity-[0.04]"
+          className="absolute inset-0 opacity-[0.05]"
           style={{
-            backgroundImage:
-              "linear-gradient(#fff 1px, transparent 1px), linear-gradient(to right, #fff 1px, transparent 1px)",
-            backgroundSize: "40px 40px",
+            backgroundImage: "radial-gradient(#fff 1px, transparent 1px)",
+            backgroundSize: "28px 28px",
           }}
         />
       </div>
 
+      {/* Top Navigation Bar: Back to website */}
+      <div className="w-full max-w-md mb-4 flex items-center justify-between z-10">
+        <Link
+          to="/"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-3.5 py-1.5 rounded-full border border-white/10 backdrop-blur-md"
+        >
+          <ArrowLeft size={14} /> Back to Citizen Portal
+        </Link>
+        <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1.5">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />{" "}
+          Secure Gateway v2.4
+        </span>
+      </div>
+
+      {/* Main Login Card */}
       <motion.div
-        initial={{ opacity: 0, y: 40, scale: 0.95 }}
+        initial={{ opacity: 0, y: 30, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
         className="w-full max-w-md relative z-10"
       >
-        {/* Glow behind card */}
-        <div className="absolute -inset-1 bg-gradient-to-br from-primary/30 via-transparent to-accent/20 rounded-[2rem] blur-xl opacity-60" />
+        {/* Card outer glow */}
+        <div className="absolute -inset-1 bg-gradient-to-r from-brand-orange/30 via-orange-500/20 to-brand-green/20 rounded-[2.2rem] blur-xl opacity-70" />
 
-        <div className="relative bg-white rounded-3xl shadow-2xl overflow-hidden">
-          {/* Top accent stripe */}
-          <div className="h-1.5 w-full bg-gradient-to-r from-primary via-orange-400 to-amber-400" />
+        <div className="relative bg-slate-900/90 backdrop-blur-xl rounded-3xl border border-slate-700/60 shadow-2xl shadow-black/80 overflow-hidden">
+          {/* Top Tricolor Accent Bar */}
+          <div className="h-1.5 w-full flex">
+            <div className="flex-1 bg-gradient-to-r from-brand-orange to-orange-500" />
+            <div className="flex-1 bg-gradient-to-r from-white/90 to-slate-200" />
+            <div className="flex-1 bg-gradient-to-r from-emerald-500 to-brand-green" />
+          </div>
 
-          <div className="p-10">
-            <AnimatePresence mode="wait">
-              {loading ? (
+          <div className="p-7 sm:p-9">
+            {/* Logged Out Notice Banner */}
+            <AnimatePresence>
+              {loggedOutNotice && (
                 <motion.div
-                  key="loading"
+                  initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  animate={{ opacity: 1, height: "auto", marginBottom: 20 }}
+                  exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+                  className="bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-xs font-semibold px-4 py-3 rounded-2xl flex items-center gap-2.5 shadow-inner"
+                >
+                  <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
+                  <span>You have been safely signed out. Thank you for your service!</span>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            <AnimatePresence mode="wait">
+              {loginSuccess ? (
+                /* Success Splash Screen */
+                <motion.div
+                  key="success"
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
-                  transition={{ duration: 0.3 }}
+                  className="py-10 text-center flex flex-col items-center justify-center space-y-4"
                 >
-                  <LogoFillLoader />
+                  <div className="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/30">
+                    <CheckCircle2 size={44} className="text-emerald-400 animate-bounce" />
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-black text-white tracking-wide">
+                      Authentication Successful
+                    </h3>
+                    <p className="text-xs text-slate-300 font-medium mt-1">
+                      Welcome back, Ward Administrator. Launching dashboard…
+                    </p>
+                  </div>
+                  <div className="w-48 h-1.5 bg-slate-800 rounded-full overflow-hidden mt-3">
+                    <div className="h-full bg-gradient-to-r from-emerald-400 to-brand-green rounded-full animate-pulse w-full" />
+                  </div>
                 </motion.div>
               ) : (
+                /* Login Form */
                 <motion.div
                   key="form"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                 >
-                  {/* Logo & Header */}
-                  <div className="text-center mb-8">
-                    <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-br from-primary/10 to-orange-50 mb-4 border border-primary/10 shadow-inner">
+                  {/* Header & Logo */}
+                  <div className="text-center mb-6">
+                    <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-brand-orange/20 to-orange-500/10 mb-3 border border-brand-orange/30 shadow-inner">
                       <img
                         src={logo}
-                        alt="Bengaluru Civic Connect"
-                        className="h-14 w-14 object-contain"
+                        alt="Civic Portal"
+                        className="h-10 w-10 object-contain drop-shadow"
                       />
                     </div>
-                    <h1 className="text-2xl font-bold text-dark">
-                      Admin Portal
+                    <h1 className="text-2xl font-black text-white tracking-tight flex items-center justify-center gap-1.5">
+                      Ward Admin Portal
                     </h1>
-                    <p className="text-slate-400 text-sm mt-1.5 font-medium">
-                      Bengaluru Civic Connect · Authorized Access Only
+                    <p className="text-slate-400 text-xs mt-1 font-medium">
+                      Bengaluru Mahanagara Palike · Authorized Access Only
                     </p>
                   </div>
 
-                  <form onSubmit={handle} className="space-y-5">
-                    {/* Username */}
+                  {/* Quick Fill Demo Credentials Bar */}
+                  <div className="mb-5 p-2.5 rounded-2xl bg-orange-500/10 border border-orange-500/20 flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2 text-orange-200">
+                      <KeyRound size={14} className="text-brand-orange" />
+                      <span className="text-[11px] font-bold">Default Admin Access</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleQuickFill}
+                      className="text-[11px] font-black text-white bg-gradient-to-r from-brand-orange to-orange-600 hover:from-orange-600 hover:to-brand-orange px-2.5 py-1 rounded-lg transition-all hover:scale-105 active:scale-95 shadow-xs"
+                      title="Auto-fill username: admin, password: bjpward@2026"
+                    >
+                      Fill Demo Credentials
+                    </button>
+                  </div>
+
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    {/* Username Input */}
                     <div>
-                      <label className="label-style">Username</label>
+                      <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                        Administrator ID / Username
+                      </label>
                       <div className="relative group">
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+                        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-orange transition-colors">
                           <User size={16} />
                         </div>
                         <input
                           type="text"
                           value={form.username}
                           onChange={(e) => {
-                            setForm((f) => ({
-                              ...f,
-                              username: e.target.value,
-                            }));
+                            setForm((f) => ({ ...f, username: e.target.value }));
                             setError("");
                           }}
-                          className="input-style pl-10 transition-shadow focus:shadow-lg focus:shadow-primary/10"
-                          placeholder="Enter username"
+                          placeholder="e.g. admin"
                           autoComplete="username"
+                          className="w-full bg-slate-800/90 border border-slate-700 rounded-xl pl-10 pr-4 py-2.5 text-sm font-semibold text-white placeholder-slate-500 outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all"
                         />
                       </div>
                     </div>
 
-                    {/* Password */}
+                    {/* Password Input */}
                     <div>
-                      <label className="label-style">Password</label>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-xs font-bold text-slate-300 uppercase tracking-wider">
+                          Password
+                        </label>
+                        {capsLockOn && (
+                          <span className="text-[10px] font-black text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/20">
+                            CAPS LOCK ON
+                          </span>
+                        )}
+                      </div>
                       <div className="relative group">
-                        <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-colors">
+                        <div className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-brand-orange transition-colors">
                           <Lock size={16} />
                         </div>
                         <input
                           type={showPw ? "text" : "password"}
                           value={form.password}
                           onChange={(e) => {
-                            setForm((f) => ({
-                              ...f,
-                              password: e.target.value,
-                            }));
+                            setForm((f) => ({ ...f, password: e.target.value }));
                             setError("");
                           }}
-                          className="input-style pl-10 pr-12 transition-shadow focus:shadow-lg focus:shadow-primary/10"
-                          placeholder="Enter password"
+                          onKeyDown={handleKeyDown}
+                          onKeyUp={handleKeyDown}
+                          placeholder="••••••••••••"
                           autoComplete="current-password"
+                          className="w-full bg-slate-800/90 border border-slate-700 rounded-xl pl-10 pr-11 py-2.5 text-sm font-semibold text-white placeholder-slate-500 outline-none focus:border-brand-orange focus:ring-2 focus:ring-brand-orange/20 transition-all"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPw((v) => !v)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-primary transition-colors p-1"
+                          className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors"
+                          title={showPw ? "Hide password" : "Show password"}
                         >
                           {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                         </button>
                       </div>
                     </div>
 
-                    {/* Error */}
+                    {/* Remember Me & Help */}
+                    <div className="flex items-center justify-between text-xs pt-1">
+                      <label className="flex items-center gap-2 cursor-pointer text-slate-300 select-none">
+                        <input
+                          type="checkbox"
+                          checked={rememberMe}
+                          onChange={(e) => setRememberMe(e.target.checked)}
+                          className="w-4 h-4 rounded border-slate-700 bg-slate-800 text-brand-orange focus:ring-brand-orange/30 accent-brand-orange"
+                        />
+                        <span>Remember username</span>
+                      </label>
+                      <span className="text-[11px] text-slate-400">
+                        Default: <code className="text-amber-300 font-mono">admin</code>
+                      </span>
+                    </div>
+
+                    {/* Error Box */}
                     <AnimatePresence>
                       {error && (
                         <motion.div
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          className="flex items-center gap-2 text-red-500 text-sm font-semibold bg-red-50 border border-red-100 rounded-xl px-4 py-3"
+                          initial={{ opacity: 0, y: -6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -6 }}
+                          className="bg-red-500/15 border border-red-500/30 text-red-300 text-xs font-semibold px-3.5 py-2.5 rounded-xl flex items-center gap-2"
                         >
-                          <AlertCircle size={16} className="shrink-0" /> {error}
+                          <AlertCircle size={15} className="text-red-400 shrink-0" />
+                          <span>{error}</span>
                         </motion.div>
                       )}
                     </AnimatePresence>
 
-                    {/* Submit */}
+                    {/* Submit Button */}
                     <button
                       type="submit"
-                      className="w-full mt-2 py-3 px-6 bg-gradient-to-r from-primary to-orange-500 hover:from-orange-500 hover:to-primary text-white font-bold rounded-xl transition-all duration-300 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/40 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2"
+                      disabled={loading}
+                      className="w-full py-3 px-5 mt-2 bg-gradient-to-r from-brand-orange via-orange-500 to-brand-green hover:from-orange-500 hover:to-brand-green text-white font-black text-sm tracking-wide rounded-xl shadow-lg shadow-brand-orange/25 hover:shadow-brand-orange/40 hover:scale-[1.02] active:scale-98 transition-all flex items-center justify-center gap-2 disabled:opacity-60 cursor-pointer"
                     >
-                      <ShieldCheck size={18} />
-                      Sign In to Admin Panel
+                      {loading ? (
+                        <>
+                          <Loader2 size={17} className="animate-spin" />
+                          <span>Authenticating credentials…</span>
+                        </>
+                      ) : (
+                        <>
+                          <ShieldCheck size={18} />
+                          <span>Sign In to Admin Panel</span>
+                        </>
+                      )}
                     </button>
                   </form>
 
-                  <p className="text-center text-[10px] text-slate-300 mt-8 uppercase tracking-widest">
-                    Restricted Access · Bengaluru Civic Ward Management System
-                  </p>
+                  {/* Security Assurance Footer */}
+                  <div className="mt-6 pt-5 border-t border-slate-800 flex items-center justify-between text-[10px] text-slate-300 font-semibold tracking-wide">
+                    <span className="flex items-center gap-1">
+                      <ShieldCheck size={13} className="text-emerald-400" />
+                      256-Bit SSL Encrypted
+                    </span>
+                    <span className="text-slate-400">
+                      BBMP Ward Role-Based Access
+                    </span>
+                  </div>
                 </motion.div>
               )}
             </AnimatePresence>
           </div>
         </div>
       </motion.div>
-
-      {/* CSS animations injected via style tag */}
-      <style>{`
-        @keyframes logoFill {
-          0%   { clip-path: inset(100% 0 0 0); opacity: 0.3; }
-          20%  { opacity: 1; }
-          100% { clip-path: inset(0% 0 0 0); opacity: 1; }
-        }
-        @keyframes logoPulse {
-          0%, 100% { clip-path: inset(0% 0 0 0); }
-          50%       { clip-path: inset(5% 0 0 0); }
-        }
-        .logo-fill-anim {
-          animation: logoFill 1.2s cubic-bezier(0.4,0,0.2,1) forwards,
-                     logoPulse 0.6s ease-in-out 1.2s infinite;
-        }
-        @keyframes progressFill {
-          0%   { width: 0%; }
-          30%  { width: 40%; }
-          70%  { width: 75%; }
-          100% { width: 95%; }
-        }
-        .logo-progress-anim {
-          animation: progressFill 1.8s cubic-bezier(0.4,0,0.2,1) forwards;
-        }
-      `}</style>
     </div>
   );
 }

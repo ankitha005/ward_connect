@@ -672,6 +672,8 @@ export default function AdminDashboard() {
     complaints,
     updateStatus,
     isAdminLoggedIn,
+    adminToken,
+    adminUser,
     adminLogout,
     volunteers,
     surveys,
@@ -681,6 +683,9 @@ export default function AdminDashboard() {
     fetchAnnouncements,
   } = useComplaintsStore();
   const navigate = useNavigate();
+
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const [tab, setTab] = useState("overview");
   const [wardFilter, setWardFilter] = useState("all");
@@ -816,27 +821,43 @@ export default function AdminDashboard() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
       {/* Top Bar */}
-      <header className="bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between sticky top-0 z-40 shadow-sm">
+      <header className="bg-white border-b border-slate-100 px-4 sm:px-6 py-3.5 flex items-center justify-between sticky top-0 z-40 shadow-xs">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-gradient-to-br from-primary to-orange-400 rounded-xl flex items-center justify-center text-white font-bold text-sm shadow-md shadow-primary/30">
+          <div className="w-9 h-9 bg-gradient-to-br from-primary to-orange-500 rounded-xl flex items-center justify-center text-white font-black text-sm shadow-md shadow-primary/20">
             A
           </div>
           <div>
-            <div className="font-bold text-dark text-sm">Ward Admin Panel</div>
-            <div className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">
-              Bengaluru Civic Connect
+            <div className="font-extrabold text-dark text-sm flex items-center gap-2">
+              Ward Admin Panel
+              <span className="hidden sm:inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-full">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                Active Session ({adminUser || "admin"})
+              </span>
+            </div>
+            <div className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
+              Bengaluru Civic Connect · Municipal Auth
             </div>
           </div>
         </div>
-        <button
-          onClick={() => {
-            adminLogout();
-            navigate("/admin/login", { replace: true });
-          }}
-          className="flex items-center gap-2 text-slate-500 hover:text-red-500 transition-colors text-sm font-semibold cursor-pointer"
-        >
-          <LogOut size={16} /> Sign Out
-        </button>
+
+        <div className="flex items-center gap-2 sm:gap-3">
+          <button
+            onClick={() => navigate("/")}
+            className="hidden sm:flex items-center gap-1.5 text-slate-600 hover:text-dark text-xs font-bold px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-50 transition-all cursor-pointer"
+            title="Open Citizen Portal in a new tab"
+          >
+            <Eye size={14} className="text-slate-500" />
+            <span>Citizen Portal</span>
+          </button>
+
+          <button
+            onClick={() => setShowLogoutModal(true)}
+            className="flex items-center gap-1.5 text-xs font-bold text-red-600 hover:text-white bg-red-50 hover:bg-red-600 border border-red-200 hover:border-red-600 px-3.5 py-1.5 rounded-xl transition-all shadow-2xs hover:shadow-sm cursor-pointer"
+          >
+            <LogOut size={14} />
+            <span>Sign Out</span>
+          </button>
+        </div>
       </header>
 
       {/* Tab Navigation */}
@@ -1333,6 +1354,58 @@ export default function AdminDashboard() {
               }));
             }}
           />
+        )}
+
+        {/* Sign Out Confirmation Modal */}
+        {showLogoutModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 15 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 15 }}
+              className="bg-white rounded-3xl p-6 sm:p-7 max-w-sm w-full shadow-2xl border border-slate-200 text-center relative overflow-hidden"
+            >
+              <div className="w-14 h-14 rounded-2xl bg-red-50 border border-red-200 text-red-500 flex items-center justify-center mx-auto mb-4 shadow-inner">
+                <LogOut size={26} />
+              </div>
+              <h3 className="text-lg font-black text-slate-900 tracking-tight">
+                Sign Out of Admin Portal?
+              </h3>
+              <p className="text-xs text-slate-500 font-medium mt-1.5 mb-6 leading-relaxed">
+                Your administrative session will be securely terminated. You can log back in at any time.
+              </p>
+
+              <div className="flex gap-2.5">
+                <button
+                  type="button"
+                  disabled={isLoggingOut}
+                  onClick={() => setShowLogoutModal(false)}
+                  className="flex-1 py-2.5 px-4 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 font-bold text-xs transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={isLoggingOut}
+                  onClick={() => {
+                    setIsLoggingOut(true);
+                    setTimeout(() => {
+                      adminLogout();
+                      navigate("/admin/login?loggedOut=true", { replace: true });
+                    }, 350);
+                  }}
+                  className="flex-1 py-2.5 px-4 rounded-xl bg-red-600 hover:bg-red-700 text-white font-black text-xs transition-all shadow-md shadow-red-600/30 flex items-center justify-center gap-1.5"
+                >
+                  {isLoggingOut ? "Signing out…" : "Confirm Sign Out"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </div>

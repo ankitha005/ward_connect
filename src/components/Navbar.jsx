@@ -3,6 +3,9 @@ import {
   Menu,
   X,
   Shield,
+  ShieldCheck,
+  LogOut,
+  Lock,
   ExternalLink,
   Sparkles,
   ChevronDown,
@@ -18,7 +21,9 @@ import logo from "../assets/logo.svg";
 import WeatherWidget from "./WeatherWidget";
 import { prefetchPath } from "../utils/routePrefetch";
 import { isMuted, toggleMute, toggleAmbient, isAmbientPlaying } from "../utils/soundEffects";
+import useComplaintsStore from "../store/complaintsStore";
 const Navbar = () => {
+  const { isAdminLoggedIn, adminLogout, adminUser } = useComplaintsStore();
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [hoveredLink, setHoveredLink] = useState(null);
@@ -317,6 +322,32 @@ const Navbar = () => {
                           {link.name}
                         </NavLink>
                       ))}
+
+                    {/* Admin Access inside More dropdown */}
+                    <div className="border-t border-slate-100 my-1" />
+                    {isAdminLoggedIn ? (
+                      <>
+                        <NavLink
+                          to="/admin/dashboard"
+                          className="flex items-center gap-2.5 px-4 py-2 text-[12px] font-bold text-amber-600 hover:bg-amber-50 rounded-xl transition-colors"
+                        >
+                          <ShieldCheck size={14} className="text-amber-500" /> Admin Dashboard
+                        </NavLink>
+                        <button
+                          onClick={() => adminLogout()}
+                          className="w-full text-left flex items-center gap-2.5 px-4 py-2 text-[12px] font-bold text-red-600 hover:bg-red-50 rounded-xl transition-colors cursor-pointer"
+                        >
+                          <LogOut size={14} /> Sign Out
+                        </button>
+                      </>
+                    ) : (
+                      <NavLink
+                        to="/admin/login"
+                        className="flex items-center gap-2.5 px-4 py-2 text-[12px] font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-colors"
+                      >
+                        <Lock size={14} /> Admin Portal
+                      </NavLink>
+                    )}
                   </div>
                 </div>
               </div>
@@ -325,6 +356,40 @@ const Navbar = () => {
             {/* Admin CTA + Controls + Mobile Toggle */}
             <div className="shrink-0 flex items-center gap-1.5 sm:gap-2 justify-end">
               <WeatherWidget />
+
+              {/* Admin status pill on desktop */}
+              {isAdminLoggedIn ? (
+                <div className="hidden lg:flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 rounded-full px-2.5 py-1">
+                  <Link
+                    to="/admin/dashboard"
+                    className="flex items-center gap-1 text-[11px] font-extrabold text-amber-600 hover:text-amber-700"
+                    title="Open Ward Admin Dashboard"
+                  >
+                    <ShieldCheck size={13} className="text-amber-500 animate-pulse" />
+                    <span>Admin</span>
+                  </Link>
+                  <button
+                    onClick={() => adminLogout()}
+                    title="Sign Out Admin"
+                    className="p-1 rounded-full text-slate-400 hover:text-red-500 hover:bg-red-50 transition-colors cursor-pointer"
+                  >
+                    <LogOut size={12} />
+                  </button>
+                </div>
+              ) : (
+                <Link
+                  to="/admin/login"
+                  className={`hidden lg:flex items-center gap-1 text-[11px] font-bold px-2.5 py-1 rounded-full transition-all ${
+                    isSolid
+                      ? "text-slate-500 hover:text-slate-900 hover:bg-slate-100"
+                      : "text-white/70 hover:text-white hover:bg-white/10"
+                  }`}
+                  title="Staff & Ward Admin Portal"
+                >
+                  <Lock size={12} />
+                  <span>Admin</span>
+                </Link>
+              )}
 
               {/* Integrated Micro-toolbar capsule (Dark mode, Sound, Music) */}
               <div
@@ -655,15 +720,39 @@ const Navbar = () => {
                   animate="visible"
                   exit="exit"
                 >
-                  <Link
-                    to="/admin/login"
-                    onMouseEnter={() => prefetchPath("/admin/login")}
-                    onTouchStart={() => prefetchPath("/admin/login")}
-                    className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-primary via-orange-500 to-amber-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-primary/25 active:scale-[0.98] transition-transform"
-                  >
-                    <Shield className="w-4 h-4" />
-                    Admin Login
-                  </Link>
+                  {isAdminLoggedIn ? (
+                    <div className="space-y-2">
+                      <Link
+                        to="/admin/dashboard"
+                        onClick={() => setIsOpen(false)}
+                        className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-amber-500 to-orange-500 text-white font-extrabold py-3 px-6 rounded-xl shadow-md shadow-amber-500/20 active:scale-[0.98] transition-transform text-sm"
+                      >
+                        <ShieldCheck className="w-4 h-4" />
+                        Admin Dashboard ({adminUser || "admin"})
+                      </Link>
+                      <button
+                        onClick={() => {
+                          adminLogout();
+                          setIsOpen(false);
+                        }}
+                        className="flex items-center justify-center gap-2 w-full bg-red-50 hover:bg-red-100 text-red-600 font-bold py-2.5 px-6 rounded-xl border border-red-200 transition-colors text-xs cursor-pointer"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Sign Out of Admin Portal
+                      </button>
+                    </div>
+                  ) : (
+                    <Link
+                      to="/admin/login"
+                      onClick={() => setIsOpen(false)}
+                      onMouseEnter={() => prefetchPath("/admin/login")}
+                      onTouchStart={() => prefetchPath("/admin/login")}
+                      className="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-primary via-orange-500 to-amber-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-primary/25 active:scale-[0.98] transition-transform text-sm"
+                    >
+                      <Shield className="w-4 h-4" />
+                      Admin Login
+                    </Link>
+                  )}
                 </motion.div>
               </motion.div>
             </>
