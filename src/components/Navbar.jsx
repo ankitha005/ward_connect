@@ -123,7 +123,9 @@ const Navbar = () => {
         ref={navRef}
         className={`fixed top-1 left-0 right-0 z-50 transition-all duration-300 ease-out ${
           isSolid
-            ? "bg-white/95 backdrop-blur-md shadow-[0_15px_40px_-5px_rgba(220,38,38,0.15)] border-b-2 border-red-600"
+            ? darkMode
+              ? "bg-slate-900/95 backdrop-blur-md shadow-[0_15px_40px_-5px_rgba(0,0,0,0.7)] border-b-2 border-red-600"
+              : "bg-white/95 backdrop-blur-md shadow-[0_15px_40px_-5px_rgba(220,38,38,0.15)] border-b-2 border-red-600"
             : "bg-gradient-to-b from-black/80 via-black/40 to-transparent"
         }`}
         style={{
@@ -222,11 +224,11 @@ const Navbar = () => {
                           link.name === "Announcements" ? "hidden xl:inline-block" : ""
                         } ${
                           isActive
-                            ? isSolid
-                              ? "text-brand-orange"
-                              : "text-white"
+                            ? "text-brand-orange"
                             : isSolid
-                              ? "text-slate-600 hover:text-slate-900"
+                              ? darkMode
+                                ? "text-slate-200 hover:text-white"
+                                : "text-slate-600 hover:text-slate-900"
                               : "text-white/80 hover:text-white"
                         }`
                       }
@@ -236,7 +238,13 @@ const Navbar = () => {
                           {isActive && (
                             <motion.div
                               layoutId="nav-active-pill"
-                              className={`absolute inset-0 rounded-xl ${isSolid ? "bg-white shadow-sm ring-1 ring-brand-orange/20" : "bg-brand-orange/40 border border-brand-orange"}`}
+                              className={`absolute inset-0 rounded-xl ${
+                                isSolid
+                                  ? darkMode
+                                    ? "bg-slate-800 shadow-sm ring-1 ring-brand-orange/40"
+                                    : "bg-white shadow-sm ring-1 ring-brand-orange/20"
+                                  : "bg-brand-orange/40 border border-brand-orange"
+                              }`}
                               transition={{
                                 type: "spring",
                                 stiffness: 400,
@@ -247,7 +255,13 @@ const Navbar = () => {
                           {hoveredLink === link.name && !isActive && (
                             <motion.div
                               layoutId="nav-hover-glow"
-                              className={`absolute inset-0 rounded-xl ${isSolid ? "bg-brand-orange/10" : "bg-white/15"}`}
+                              className={`absolute inset-0 rounded-xl ${
+                                isSolid
+                                  ? darkMode
+                                    ? "bg-white/10"
+                                    : "bg-brand-orange/10"
+                                  : "bg-white/15"
+                              }`}
                               animate={{ opacity: 1 }}
                               exit={{ opacity: 0 }}
                             />
@@ -271,7 +285,13 @@ const Navbar = () => {
                 {/* 'More' Dropdown */}
                 <div className="relative group px-1">
                   <button
-                    className={`relative px-2.5 xl:px-3 py-1.5 xl:py-2 text-[12px] xl:text-[13px] font-bold rounded-full transition-all duration-300 uppercase tracking-wide flex items-center gap-1 focus:outline-none ${isSolid ? "text-slate-600 hover:text-slate-900" : "text-white/80 hover:text-white"}`}
+                    className={`relative px-2.5 xl:px-3 py-1.5 xl:py-2 text-[12px] xl:text-[13px] font-bold rounded-full transition-all duration-300 uppercase tracking-wide flex items-center gap-1 focus:outline-none ${
+                      isSolid
+                        ? darkMode
+                          ? "text-slate-200 hover:text-white"
+                          : "text-slate-600 hover:text-slate-900"
+                        : "text-white/80 hover:text-white"
+                    }`}
                   >
                     More{" "}
                     <ChevronDown
@@ -279,7 +299,7 @@ const Navbar = () => {
                       className="group-hover:rotate-180 transition-transform duration-300"
                     />
                   </button>
-                  <div className="absolute top-10 right-0 w-48 opacity-0 translate-y-3 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-200 bg-white rounded-2xl shadow-xl shadow-black/10 border border-slate-100 p-2 flex flex-col z-[60] group-hover:pointer-events-auto pointer-events-none">
+                  <div className="absolute top-10 right-0 w-52 opacity-0 translate-y-3 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-200 bg-white dark:bg-slate-900 rounded-2xl shadow-xl shadow-black/20 border border-slate-100 dark:border-slate-800 p-2 flex flex-col z-[60] group-hover:pointer-events-auto pointer-events-none">
                     {/* Announcements in dropdown when on lg laptop screens */}
                     <NavLink
                       to="/announcements"
@@ -401,12 +421,17 @@ const Navbar = () => {
               >
                 {/* Dark Mode Toggle */}
                 <motion.button
-                  onClick={() => setDarkMode((d) => !d)}
+                  onClick={() => {
+                    playPop();
+                    setDarkMode((d) => !d);
+                  }}
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
                   className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center transition-all ${
                     isSolid
-                      ? "text-slate-600 hover:text-slate-900 hover:bg-white shadow-xs"
+                      ? darkMode
+                        ? "text-amber-400 hover:bg-slate-800"
+                        : "text-slate-600 hover:text-slate-900 hover:bg-white shadow-xs"
                       : "text-white/80 hover:text-white hover:bg-white/20"
                   }`}
                   title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
@@ -639,8 +664,11 @@ const Navbar = () => {
                     Interface Mode
                   </span>
                   <button
-                    onClick={() => setDarkMode((d) => !d)}
-                    className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold px-4 py-2 rounded-xl transition-all border border-slate-200"
+                    onClick={() => {
+                      playPop();
+                      setDarkMode((d) => !d);
+                    }}
+                    className="flex items-center gap-2 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold px-4 py-2 rounded-xl transition-all border border-slate-200 dark:border-slate-700"
                   >
                     {darkMode ? (
                       <>
